@@ -11,7 +11,7 @@ Stato al 2026-10-29 (seconda sessione: alimenti, micronutrienti, diario, barcode
 - **In locale non c'è Java né Android SDK**: si compila solo su GitHub Actions.
 - `.github/workflows/build.yml` (su push): `gradle testDebugUnitTest` → `assembleDebug` → pubblica la release `latest`. Gradle 8.9 tramite setup-gradle, niente wrapper nel repo.
 - `.github/workflows/smoke.yml` (manuale: `gh workflow run smoke.yml`): emulatore API 34, salta l'onboarding, apre le 6 schede, Carico carbo e Impostazioni, poi monkey per 400 eventi, e fallisce se nel logcat c'è `FATAL EXCEPTION`. Gli screenshot si scaricano con `gh run download <id> -n smoke -D <cartella>` (lo script è `.github/smoke.sh`).
-- Ultima verifica: build e 15 test verdi; smoke test superato. Screenshot di Oggi e Diario controllati e corretti; non ho guardato le altre schermate né il tema scuro.
+- Ultima verifica: build e 25 test verdi; smoke test superato (ora copre anche notifiche, modifica del pasto, ricerca alimenti e le 6 schede in tema scuro). Screenshot controllati in chiaro e scuro. Non verificati su telefono reale: fotocamera e codice a barre, Open Food Facts, notifiche che suonano davvero, BOOT_COMPLETED.
 
 ## Stack e vincoli di versione
 - Kotlin 2.0.21, AGP 8.7.3, compileSdk/targetSdk 35, minSdk 29, Compose BOM 2024.12.01, Material 3.
