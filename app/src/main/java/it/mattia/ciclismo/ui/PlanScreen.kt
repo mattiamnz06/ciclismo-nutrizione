@@ -150,7 +150,7 @@ private fun LoadView(nav: NavState) {
                 Muted("TSS ${"%.0f".format(ev.info.tss)} · ${ev.info.kj.toInt()} kJ")
             }
             Column {
-                Text("$daysTo", fontSize = 32.sp, fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                Text("$daysTo", fontSize = 38.sp, fontWeight = FontWeight.Bold, fontFamily = Condensed, color = MaterialTheme.colorScheme.primary)
                 Muted("giorni", 11)
             }
         }

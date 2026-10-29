@@ -6,7 +6,17 @@ import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import it.mattia.ciclismo.R
 import it.mattia.ciclismo.data.Repo
+
+/** Barlow Condensed (OFL) for titles and big numbers, as in the prototype. */
+val Condensed = FontFamily(
+    Font(R.font.barlow_condensed_semibold, FontWeight.SemiBold),
+    Font(R.font.barlow_condensed_bold, FontWeight.Bold),
+)
 
 val Lime = Color(0xFFC6F432)
 val Graphite = Color(0xFF111418)

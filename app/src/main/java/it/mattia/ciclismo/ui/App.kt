@@ -4,6 +4,8 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
@@ -17,6 +19,9 @@ import it.mattia.ciclismo.sync.Strava
 import java.time.LocalDate
 
 private val TABS = listOf("Oggi", "Giri", "Settimana", "Piano", "Diario", "Forma")
+private val TAB_ICONS = listOf(
+    Icons.Filled.Home, Icons.Filled.LocationOn, Icons.Filled.DateRange, Icons.Filled.Edit, Icons.Filled.List, Icons.Filled.Favorite,
+)
 
 class NavState {
     var tab by mutableIntStateOf(0)
@@ -77,14 +82,17 @@ fun CiclismoApp() {
                 title = {
                     Text(
                         if (nav.settings) sectionTitle(nav.section) else TABS[nav.tab],
-                        fontWeight = FontWeight.Bold, fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold, fontSize = 26.sp, fontFamily = Condensed,
                     )
                 },
                 actions = {
                     TextButton(onClick = {
                         if (nav.settings && nav.section != null) nav.section = null
                         else { nav.settings = !nav.settings; nav.section = null }
-                    }) { Text(if (nav.settings) (if (nav.section != null) "Indietro" else "Chiudi") else "Impostazioni") }
+                    }) {
+                        if (!nav.settings) Icon(Icons.Filled.Settings, contentDescription = null, Modifier.padding(end = 6.dp).size(20.dp))
+                        Text(if (nav.settings) (if (nav.section != null) "Indietro" else "Chiudi") else "Impostazioni")
+                    }
                 },
             )
         },
@@ -94,7 +102,7 @@ fun CiclismoApp() {
                     NavigationBarItem(
                         selected = !nav.settings && nav.tab == i,
                         onClick = { nav.tab = i; nav.settings = false; nav.section = null },
-                        icon = { Text(t.take(1), fontWeight = FontWeight.Bold) },
+                        icon = { Icon(TAB_ICONS[i], contentDescription = null) },
                         label = { Text(t, fontSize = 10.sp, maxLines = 1) },
                     )
                 }
@@ -122,7 +130,7 @@ private fun Onboarding() {
     val ids = listOf("profilo", "corpo", "potenza")
     Scaffold { pad ->
         Column(Modifier.padding(pad).padding(16.dp).verticalScroll(rememberScrollState())) {
-            Text("Benvenuto", fontSize = 30.sp, fontWeight = FontWeight.Bold)
+            Text("Benvenuto", fontSize = 34.sp, fontWeight = FontWeight.Bold, fontFamily = Condensed)
             Muted("Tre passi per calcolare calorie e macro sui tuoi dati. Potrai cambiare tutto in Impostazioni.", 13)
             Spacer(Modifier.height(12.dp))
             Strong("${step + 1} di 3 · ${titles[step]}", 16)

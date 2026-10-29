@@ -96,7 +96,7 @@ fun Accent(text: String) =
 fun Stat(label: String, value: String, modifier: Modifier = Modifier, valueColor: Color = Color.Unspecified) {
     Column(modifier) {
         Muted(label, 11)
-        Text(value, fontSize = 18.sp, fontWeight = FontWeight.SemiBold, color = valueColor)
+        Text(value, fontSize = 22.sp, fontWeight = FontWeight.SemiBold, fontFamily = Condensed, color = valueColor)
     }
 }
 

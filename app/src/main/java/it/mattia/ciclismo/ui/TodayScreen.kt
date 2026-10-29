@@ -56,7 +56,7 @@ fun TodayScreen(nav: NavState) {
             Muted("piano ${v.plan.kcal} kcal", 13)
         }
         Row(verticalAlignment = Alignment.Bottom) {
-            Text("${v.eatenKcal}", fontSize = 40.sp, fontWeight = FontWeight.Bold)
+            Text("${v.eatenKcal}", fontSize = 48.sp, fontWeight = FontWeight.Bold, fontFamily = Condensed)
             Muted("  mangiate · ne restano ${(v.plan.kcal - v.eatenKcal).coerceAtLeast(0)}", 13, Modifier.padding(bottom = 6.dp))
         }
         BarLine(v.eatenKcal / v.plan.kcal.toFloat(), MaterialTheme.colorScheme.primary, 8.dp)

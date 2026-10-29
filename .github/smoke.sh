@@ -29,6 +29,38 @@ tap_text "Piano"; sleep 1; tap_text "Carico carbo"; sleep 2
 adb exec-out screencap -p > smoke-$n-carico.png
 tap_text "Impostazioni"; sleep 2
 adb exec-out screencap -p > smoke-$((n+1))-impostazioni.png
+
+# Notification settings with the master switch on.
+tap_text "Notifiche"; sleep 2
+adb shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1
+adb pull /sdcard/ui.xml ui.xml >/dev/null 2>&1
+sw=$(grep -o 'class="android.widget.Switch"[^>]*bounds="\[[0-9]*,[0-9]*\]\[[0-9]*,[0-9]*\]"' ui.xml | head -1 | grep -o 'bounds="[^"]*"' | grep -o '[0-9]*' | tr '\n' ' ')
+set -- $sw
+if [ $# -eq 4 ]; then adb shell input tap $(( ($1 + $3) / 2 )) $(( ($2 + $4) / 2 )); fi
+sleep 2
+adb exec-out screencap -p > smoke-20-notifiche.png
+tap_text "Indietro"; sleep 1; tap_text "Chiudi"; sleep 1
+
+# Diary: open the first meal, edit its foods, open the food picker.
+tap_text "Diario"; sleep 2
+tap_text "Tocca un pasto per grammi, perché e alternative"
+adb shell input tap 540 700; sleep 2
+adb exec-out screencap -p > smoke-21-pasto-aperto.png
+tap_text "Modifica alimenti"; sleep 2
+adb exec-out screencap -p > smoke-22-modifica.png
+tap_text "Aggiungi alimento"; sleep 2
+adb shell input text "parmig"; sleep 2
+adb exec-out screencap -p > smoke-23-ricerca.png
+tap_text "Chiudi"; sleep 1
+
+# Same tabs in dark mode (theme follows the system by default).
+adb shell cmd uimode night yes; sleep 3
+for t in Oggi Giri Settimana Piano Diario Forma; do
+  tap_text "$t"; sleep 2
+  adb exec-out screencap -p > "smoke-3$n-scuro-$t.png"; n=$((n+1))
+done
+adb shell cmd uimode night no; sleep 2
+
 adb shell monkey -p it.mattia.ciclismo --throttle 150 -s 7 400 >/dev/null 2>&1
 sleep 2
 adb logcat -d > logcat.txt

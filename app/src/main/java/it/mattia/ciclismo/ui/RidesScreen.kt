@@ -75,7 +75,7 @@ fun RidesScreen(nav: NavState) {
                         Muted(r.source, 12)
                     }
                     Row(verticalAlignment = Alignment.Bottom, modifier = Modifier.padding(top = 4.dp)) {
-                        Text("%.0f km".format(r.km), fontSize = 30.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold)
+                        Text("%.0f km".format(r.km), fontSize = 34.sp, fontWeight = androidx.compose.ui.text.font.FontWeight.Bold, fontFamily = Condensed)
                         Muted("   ${fmtDur(r.durSec)} · +${r.elev} m", 13, Modifier.padding(bottom = 4.dp))
                     }
                     Row(Modifier.fillMaxWidth().padding(top = 8.dp)) {

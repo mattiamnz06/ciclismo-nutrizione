@@ -44,22 +44,26 @@ fun MealCard(
         }
         if (expanded) {
             Spacer(Modifier.height(10.dp))
+            // Columns: name, quantity (wider), then kcal and macros right-aligned.
+            val w = listOf(1.7f, 0.9f, 0.8f, 0.8f, 0.8f)
             Row(Modifier.fillMaxWidth()) {
-                Muted("Alimento", 11, Modifier.weight(2.6f))
-                listOf("Qtà", "kcal", "C", "P", "G").forEach { Muted(it, 11, Modifier.weight(1.1f).wrapAlign()) }
+                Muted("Alimento", 11, Modifier.weight(2.2f))
+                listOf("Qtà", "kcal", "C", "P", "G").forEachIndexed { i, h ->
+                    Text(h, Modifier.weight(w[i]), fontSize = 11.sp, textAlign = TextAlign.End, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                }
             }
             m.items.forEach { it ->
                 Row(Modifier.fillMaxWidth().padding(top = 4.dp)) {
-                    Text(it.food.name.substringBefore(" (") , Modifier.weight(2.6f), fontSize = 12.sp)
-                    listOf(it.qty(), "${it.kcal.toInt()}", "${it.c.toInt()}", "${it.p.toInt()}", "${it.f.toInt()}").forEach { v ->
-                        Text(v, Modifier.weight(1.1f).wrapAlign(), fontSize = 12.sp)
+                    Text(it.food.name.substringBefore(" ("), Modifier.weight(2.2f), fontSize = 12.sp)
+                    listOf(it.qty(), "${it.kcal.toInt()}", "${it.c.toInt()}", "${it.p.toInt()}", "${it.f.toInt()}").forEachIndexed { i, v ->
+                        Text(v, Modifier.weight(w[i]), fontSize = 12.sp, textAlign = TextAlign.End, maxLines = 1)
                     }
                 }
             }
             Row(Modifier.fillMaxWidth().padding(top = 6.dp)) {
-                Text("Totale", Modifier.weight(3.7f), fontWeight = FontWeight.SemiBold, fontSize = 12.sp)
-                listOf("${m.kcal}", "${m.c}", "${m.p}", "${m.f}").forEach { v ->
-                    Text(v, Modifier.weight(1.1f).wrapAlign(), fontWeight = FontWeight.SemiBold, fontSize = 12.sp)
+                Text("Totale", Modifier.weight(2.2f + w[0]), fontWeight = FontWeight.SemiBold, fontSize = 12.sp)
+                listOf("${m.kcal}", "${m.c}", "${m.p}", "${m.f}").forEachIndexed { i, v ->
+                    Text(v, Modifier.weight(w[i + 1]), fontWeight = FontWeight.SemiBold, fontSize = 12.sp, textAlign = TextAlign.End)
                 }
             }
             val share = if (dayKcal > 0) m.kcal * 100 / dayKcal else 0
@@ -78,5 +82,3 @@ fun MealCard(
         }
     }
 }
-
-private fun Modifier.wrapAlign(): Modifier = this
