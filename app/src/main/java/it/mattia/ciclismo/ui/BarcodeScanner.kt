@@ -70,7 +70,10 @@ private fun CameraPreview(onResult: (String) -> Unit) {
     }
     var done by remember { mutableStateOf(false) }
     val result by rememberUpdatedState(onResult)
-    val provider by produceState<ProcessCameraProvider?>(null) { value = ProcessCameraProvider.awaitInstance(ctx) }
+    val provider by produceState<ProcessCameraProvider?>(null) {
+        val f = ProcessCameraProvider.getInstance(ctx)
+        f.addListener({ value = f.get() }, ContextCompat.getMainExecutor(ctx))
+    }
     val view = remember { PreviewView(ctx) }
     DisposableEffect(provider) {
         val p = provider
