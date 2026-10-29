@@ -1,0 +1,264 @@
+avena	173904	Cereals, oats, regular and quick, not fortified, dry
+riso	169756	Rice, white, long-grain, regular, raw, unenriched
+riso_integrale	169703	Rice, brown, long-grain, raw (Includes foods for USDA's Food Distribution Program)
+riso_cotto	169757	Rice, white, long-grain, regular, unenriched, cooked without salt
+pasta	168927	Pasta, dry, unenriched
+pasta_cotta	168928	Pasta, cooked, unenriched, without added salt
+pasta_integrale	169738	Pasta, whole-wheat, dry (Includes foods for USDA's Food Distribution Program)
+pasta_uovo	169755	Noodles, egg, dry, unenriched
+couscous	169699	Couscous, dry
+quinoa	168874	Quinoa, uncooked
+farro	169745	Spelt, uncooked
+orzo	170284	Barley, pearled, raw
+bulgur	170688	Bulgur, dry
+polenta	168929	Cornmeal, degermed, unenriched, yellow
+miglio	169702	Millet, raw
+grano_saraceno	170685	Buckwheat groats, roasted, dry
+farina	169761	Wheat flour, white, all-purpose, unenriched
+farina_integrale	168944	Wheat flour, whole-grain, soft wheat
+corn_flakes	174648	Cereals ready-to-eat, RALSTON Corn Flakes
+granola	171646	Cereals ready-to-eat, granola, homemade
+riso_soffiato	173912	Cereals ready-to-eat, rice, puffed, fortified
+gallette_riso	170250	Snacks, rice cakes, brown rice, plain, unsalted
+gallette_mais	169679	Snacks, rice cakes, brown rice, corn
+pane	174913	Bread, Italian
+pane_integrale	172688	Bread, whole-wheat, commercially prepared
+pane_segale	172684	Bread, rye
+pane_bianco	174924	Bread, white, commercially prepared (includes soft bread crumbs)
+baguette	172675	Bread, french or vienna (includes sourdough)
+focaccia	174915	Bread, pita, white, enriched
+piadina	175037	Tortillas, ready-to-bake or -fry, flour, refrigerated
+grissini	174977	Crackers, melba toast, plain
+fette_biscottate	171372	Zwieback
+crackers	172746	Crackers, saltines (includes oyster, soda, soup)
+crackers_integrali	172749	Crackers, whole-wheat
+bagel	174899	Bagels, plain, enriched, with calcium propionate (includes onion, poppy, sesame)
+cornetto	174987	Croissants, butter
+pancake	175009	Pancakes, plain, prepared from recipe
+biscotti	174973	Cookies, vanilla wafers, lower fat
+biscotti_frollini	174950	Cookies, butter, commercially prepared, enriched
+pizza	170317	Pizza, cheese topping, regular crust, frozen, cooked
+torta	175011	Pie, apple, commercially prepared, enriched flour
+pan_di_spagna	172706	Cake, sponge, commercially prepared
+plumcake	172704	Cake, pound, commercially prepared, butter (includes fresh and frozen)
+ceci	173757	Chickpeas (garbanzo beans, bengal gram), mature seeds, cooked, boiled, without salt
+ceci_secchi	173756	Chickpeas (garbanzo beans, bengal gram), mature seeds, raw
+lenticchie	172421	Lentils, mature seeds, cooked, boiled, without salt
+lenticchie_secche	172420	Lentils, raw
+lenticchie_rosse	174284	Lentils, pink or red, raw
+fagioli	173736	Beans, cranberry (roman), mature seeds, cooked, boiled, without salt
+fagioli_cannellini	175203	Beans, white, mature seeds, cooked, boiled, without salt
+fagioli_neri	173735	Beans, black, mature seeds, cooked, boiled, without salt
+fagioli_rossi	175194	Beans, kidney, red, mature seeds, cooked, boiled, without salt
+piselli	170419	Peas, green, raw
+piselli_surgelati	170017	Peas, green, frozen, cooked, boiled, drained, without salt
+fave	173753	Broadbeans (fava beans), mature seeds, cooked, boiled, without salt
+edamame	168411	Edamame, frozen, prepared
+soia	174270	Soybeans, mature seeds, raw
+tofu	172448	Tofu, firm, prepared with calcium sulfate and magnesium chloride (nigari)
+tempeh	174272	Tempeh
+hummus	174289	Hummus, commercial
+latte_soia	172446	Soymilk, original and vanilla, unfortified
+pollo	171077	Chicken, broiler or fryers, breast, skinless, boneless, meat only, raw
+pollo_cotto	171477	Chicken, broilers or fryers, breast, meat only, cooked, roasted
+pollo_coscia	173627	Chicken, broilers or fryers, dark meat, thigh, meat only, raw
+tacchino	174515	Turkey, retail parts, breast, meat only, raw
+tacchino_macinato	171505	Turkey, Ground, raw
+manzo	174055	Beef, top sirloin, steak, separable lean only, trimmed to 1/8" fat, all grades, raw
+manzo_macinato	174030	Beef, ground, 90% lean meat / 10% fat, raw
+bistecca	172118	Beef, short loin, t-bone steak, separable lean and fat, trimmed to 1/8" fat, all grades, raw
+vitello	175269	Veal, leg (top round), separable lean only, raw
+maiale	167829	Pork, fresh, loin, center loin (chops), bone-in, separable lean only, raw
+filetto_maiale	168249	Pork, fresh, loin, tenderloin, separable lean only, raw
+agnello	174313	Lamb, leg, whole (shank and sirloin), separable lean only, trimmed to 1/4" fat, choice, raw
+coniglio	172521	Game meat, rabbit, domesticated, composite of cuts, raw
+cavallo	175086	Game meat, horse, raw
+fegato	172534	Veal, variety meats and by-products, liver, raw
+struzzo	172839	Ostrich, inside leg, raw
+prosciutto_cotto	173864	Ham, sliced, regular (approximately 11% fat)
+prosciutto_crudo	167871	Pork, cured, ham, boneless, extra lean (approximately 5% fat), roasted
+bresaola	170604	Beef, cured, dried
+fesa_tacchino_affettata	172941	Turkey breast, sliced, prepackaged
+salame	172938	Salami, dry or hard, pork
+mortadella	173856	Bologna, pork
+wurstel	173862	Frankfurter, beef, unheated
+merluzzo	171955	Fish, cod, Atlantic, raw
+salmone	175167	Fish, salmon, Atlantic, farmed, raw
+salmone_affumicato	173687	Fish, salmon, chinook, smoked
+tonno	173709	Fish, tuna, light, canned in water, drained solids (Includes foods for USDA's Food Distribution Program)
+tonno_olio	173708	Fish, tuna, light, canned in oil, drained solids
+tonno_fresco	175159	Fish, tuna, fresh, yellowfin, raw
+sgombro	175119	Fish, mackerel, Atlantic, raw
+sardine	175139	Fish, sardine, Atlantic, canned in oil, drained solids with bone
+alici	174182	Fish, anchovy, european, raw
+orata	175142	Fish, sea bass, mixed species, raw
+branzino	173694	Fish, sea bass, mixed species, cooked, dry heat
+trota	173717	Fish, trout, rainbow, farmed, raw
+sogliola	174196	Fish, flatfish (flounder and sole species), raw
+nasello	173713	Fish, whiting, mixed species, raw
+pesce_spada	173703	Fish, swordfish, raw
+baccala	174190	Fish, cod, Atlantic, dried and salted
+gamberi	175179	Crustaceans, shrimp, raw
+calamari	174223	Mollusks, squid, mixed species, raw
+polpo	174218	Mollusks, octopus, common, raw
+cozze	174216	Mollusks, mussel, blue, raw
+vongole	174214	Mollusks, clam, mixed species, raw
+uova	171287	Egg, whole, raw, fresh
+albume	172183	Egg, white, raw, fresh
+tuorlo	172184	Egg, yolk, raw, fresh
+latte	170872	Milk, lowfat, fluid, 1% milkfat, with added vitamin A and vitamin D
+latte_intero	171265	Milk, whole, 3.25% milkfat, with added vitamin D
+latte_scremato	171269	Milk, nonfat, fluid, with added vitamin A and vitamin D (fat free or skim)
+latte_senza_lattosio	170873	Milk, lowfat, fluid, 1% milkfat, with added nonfat milk solids, vitamin A and vitamin D
+yogurt	170894	Yogurt, Greek, plain, nonfat (Includes foods for USDA's Food Distribution Program)
+yogurt_greco_intero	171304	Yogurt, Greek, plain, whole milk
+yogurt_bianco	171284	Yogurt, plain, whole milk
+yogurt_magro	170887	Yogurt, plain, skim milk
+yogurt_frutta	173456	Yogurt, fruit, low fat, 9 grams protein per 8 ounce, fortified with vitamin D
+kefir	170904	Kefir, lowfat, plain, LIFEWAY
+panna	170857	Cream, fluid, light (coffee cream or table cream)
+burro	173430	Butter, without salt
+fiocchi_latte	172182	Cheese, cottage, lowfat, 2% milkfat
+ricotta	171248	Cheese, ricotta, part skim milk
+mozzarella	170845	Cheese, mozzarella, whole milk
+mozzarella_light	170847	Cheese, mozzarella, part skim milk
+parmigiano	170848	Cheese, parmesan, hard
+grana_grattugiato	171247	Cheese, parmesan, grated
+pecorino	171249	Cheese, romano
+feta	173420	Cheese, feta
+emmental	171251	Cheese, swiss
+provolone	170850	Cheese, provolone
+gorgonzola	172175	Cheese, blue
+stracchino	173418	Cheese, cream
+skyr	170903	Yogurt, Greek, plain, lowfat
+zucchine	169291	Squash, summer, zucchini, includes skin, raw
+verdure	170472	Vegetables, mixed, frozen, cooked, boiled, drained, without salt
+spinaci	168462	Spinach, raw
+spinaci_cotti	168463	Spinach, cooked, boiled, drained, without salt
+broccoli	170379	Broccoli, raw
+broccoli_cotti	169967	Broccoli, cooked, boiled, drained, without salt
+cavolfiore	169986	Cauliflower, raw
+cavolo_nero	168421	Kale, raw
+cavolo_cappuccio	169975	Cabbage, raw
+cavoletti	170383	Brussels sprouts, raw
+carote	170393	Carrots, raw
+pomodori	170457	Tomatoes, red, ripe, raw, year round average
+pomodorini	170457	Tomatoes, red, ripe, raw, year round average
+passata	170460	Tomato products, canned, puree, without salt added
+pelati	170051	Tomatoes, red, ripe, canned, packed in tomato juice
+peperoni	170108	Peppers, sweet, red, raw
+melanzane	169228	Eggplant, raw
+lattuga	169249	Lettuce, green leaf, raw
+insalata	169247	Lettuce, cos or romaine, raw
+rucola	169387	Arugula, raw
+radicchio	168564	Radicchio, raw
+cetrioli	168409	Cucumber, with peel, raw
+finocchi	169385	Fennel, bulb, raw
+sedano	169988	Celery, raw
+cipolle	170000	Onions, raw
+aglio	169230	Garlic, raw
+funghi	169251	Mushrooms, white, raw
+asparagi	168389	Asparagus, raw
+fagiolini	169961	Beans, snap, green, raw
+carciofi	169205	Artichokes, (globe or french), raw
+bietole	169991	Chard, swiss, raw
+zucca	168448	Pumpkin, raw
+barbabietola	169146	Beets, cooked, boiled, drained
+mais	169214	Corn, sweet, yellow, canned, whole kernel, drained solids
+olive	169096	Olives, pickled, canned or bottled, green
+patate	170026	Potatoes, flesh and skin, raw
+patate_lesse	170440	Potatoes, boiled, cooked without skin, flesh, without salt
+patate_dolci	168482	Sweet potato, raw, unprepared (Includes foods for USDA's Food Distribution Program)
+patate_dolci_cotte	168483	Sweet potato, cooked, baked in skin, flesh, without salt
+avocado	171705	Avocados, raw, all commercial varieties
+banana	173944	Bananas, raw
+mela	171688	Apples, raw, with skin (Includes foods for USDA's Food Distribution Program)
+pera	169118	Pears, raw
+arancia	169097	Oranges, raw, all commercial varieties
+mandarino	169105	Tangerines, (mandarin oranges), raw
+pompelmo	174673	Grapefruit, raw, pink and red, all areas
+limone	167746	Lemons, raw, without peel
+kiwi	168153	Kiwifruit, green, raw
+fragole	167762	Strawberries, raw
+mirtilli	171711	Blueberries, raw
+lamponi	167755	Raspberries, raw
+more	173946	Blackberries, raw
+ciliegie	171719	Cherries, sweet, raw
+uva	174683	Grapes, red or green (European type, such as Thompson seedless), raw
+pesca	169928	Peaches, yellow, raw
+albicocca	171697	Apricots, raw
+prugna	169949	Plums, raw
+anguria	167765	Watermelon, raw
+melone	169092	Melons, cantaloupe, raw
+ananas	169124	Pineapple, raw, all varieties
+mango	169910	Mangos, raw
+fichi	173021	Figs, raw
+cachi	169941	Persimmons, japanese, raw
+melograno	169134	Pomegranates, raw
+datteri	168191	Dates, medjool
+fichi_secchi	174665	Figs, dried, uncooked
+albicocche_secche	173941	Apricots, dried, sulfured, uncooked
+prugne_secche	168162	Plums, dried (prunes), uncooked
+uvetta	168164	Raisins, golden, seedless
+mirtilli_rossi_secchi	171723	Cranberries, dried, sweetened (Includes foods for USDA's Food Distribution Program)
+mandorle	170567	Nuts, almonds
+noci	170187	Nuts, walnuts, english
+nocciole	170581	Nuts, hazelnuts or filberts
+anacardi	170162	Nuts, cashew nuts, raw
+pistacchi	170184	Nuts, pistachio nuts, raw
+arachidi	172430	Peanuts, all types, raw
+noci_brasile	170569	Nuts, brazilnuts, dried, unblanched
+pinoli	170591	Nuts, pine nuts, dried
+burro_arachidi	172470	Peanut butter, smooth style, without salt
+crema_mandorle	168588	Nuts, almond butter, plain, without salt added
+semi_chia	170554	Seeds, chia seeds, dried
+semi_lino	169414	Seeds, flaxseed
+semi_zucca	170556	Seeds, pumpkin and squash seed kernels, dried
+semi_girasole	170562	Seeds, sunflower seed kernels, dried
+sesamo	170150	Seeds, sesame seeds, whole, dried
+tahina	170189	Seeds, sesame butter, tahini, from roasted and toasted kernels (most common type)
+cocco	170170	Nuts, coconut meat, dried (desiccated), not sweetened
+olio	171413	Oil, olive, salad or cooking
+olio_semi	171017	Oil, sunflower, linoleic (less than 60%)
+olio_cocco	171412	Oil, coconut
+maionese	171009	Salad dressing, mayonnaise, regular
+pesto	171579	Sauce, pesto, ready-to-serve, refrigerated
+aceto	172241	Vinegar, balsamic
+ketchup	168556	Catsup
+senape	172234	Mustard, prepared, yellow
+salsa_soia	174277	Soy sauce made from soy and wheat (shoyu)
+sale	173468	Salt, table
+miele	169640	Honey
+zucchero	169655	Sugars, granulated
+zucchero_canna	168833	Sugars, brown
+marmellata	169641	Jams and preserves
+sciroppo_acero	169661	Syrups, maple
+cioccolato_fondente	170273	Chocolate, dark, 70-85% cacao solids
+cioccolato_latte	167587	Candies, milk chocolate
+crema_nocciole	168000	Chocolate-flavored hazelnut spread
+cacao	169593	Cocoa, dry powder, unsweetened
+gelato	167575	Ice creams, vanilla
+caramelle	167989	Candies, gumdrops, starch jelly pieces
+acqua	173647	Beverages, water, tap, drinking
+caffe	171891	Beverages, coffee, brewed, espresso, restaurant-prepared
+te	173227	Beverages, tea, black, brewed, prepared with tap water
+succo_arancia	169098	Orange juice, raw (Includes foods for USDA's Food Distribution Program)
+succo_mela	173933	Apple juice, canned or bottled, unsweetened, without added ascorbic acid
+succo_frutta	168186	Pear nectar, canned, with added ascorbic acid
+cola	174852	Beverages, carbonated, cola, regular
+birra	168746	Alcoholic beverage, beer, regular, all
+vino_rosso	173190	Alcoholic beverage, wine, table, red
+latte_mandorla	174832	Beverages, almond milk, unsweetened, shelf stable
+latte_riso	171942	Beverages, rice milk, unsweetened
+isotonico	175108	Beverages, COCA-COLA, POWERADE, lemon-lime flavored, ready-to-drink
+cioccolata_calda	173450	Milk, chocolate, fluid, commercial, reduced fat, with added calcium
+whey	173177	Beverages, Whey protein powder isolate
+gel	-	manuale
+gel_caffeina	-	manuale
+barretta	-	manuale
+barretta_proteica	-	manuale
+maltodestrine	-	manuale
+sali	-	manuale
+chews	-	manuale
+gnocchi	-	manuale
+riso_barretta	-	manuale

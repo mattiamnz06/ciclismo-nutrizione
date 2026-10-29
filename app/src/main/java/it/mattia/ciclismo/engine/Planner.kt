@@ -157,24 +157,40 @@ object Planner {
         return Metrics.estimatedFtp(best.toDouble()).toInt()
     }
 
-    /** Micronutrient percentages (eaten so far, and full day) against the reference intakes. */
-    fun micros(meals: List<Meal>, eatenIds: Set<String>, scaleOf: (Meal) -> Double): List<Triple<String, Int, Int>> =
-        Foods.microNames.mapIndexed { i, name ->
-            val eaten = meals.filter { it.id in eatenIds }.sumOf { it.micro(i, scaleOf(it)) }
-            val full = meals.sumOf { it.micro(i, 1.0) }
-            Triple(name, (eaten / Foods.rda[i] * 100).toInt(), (full / Foods.rda[i] * 100).toInt())
-        }
+    private fun rawSum(meals: List<Meal>): DoubleArray =
+        DoubleArray(Foods.RAW) { i -> meals.sumOf { it.micro(i) } }
 
-    /** Suggests a food for the weakest micronutrient of the full day. */
-    fun microAdvice(micros: List<Triple<String, Int, Int>>): String? {
-        val weak = micros.filter { it.third < 80 }.minByOrNull { it.third } ?: return null
-        val food = when (weak.first) {
-            "Ferro" -> "spinaci, legumi o carne magra con un agrume"
-            "Calcio" -> "yogurt, latte o mandorle"
-            "Magnesio" -> "mandorle, avena o legumi"
-            "Potassio" -> "banane, patate o kiwi"
-            else -> "kiwi, arance o verdure crude"
-        }
-        return "${weak.first} a fine giornata solo al ${weak.third}% del fabbisogno: nel prossimo pasto aggiungi $food."
+    /** Percent of the reference intake for each shown nutrient: (name, eaten so far, full day). */
+    fun micros(meals: List<Meal>, eaten: List<Meal>): List<Triple<String, Int, Int>> {
+        val e = Foods.percents(rawSum(eaten))
+        val f = Foods.percents(rawSum(meals))
+        return Foods.microNames.mapIndexed { i, n -> Triple(n, e[i], f[i]) }
+    }
+
+    /** Small portions that cover a good part of one nutrient, in order of preference (index of [Foods.microNames]). */
+    private val boosters = mapOf(
+        0 to listOf("semi_zucca" to 25, "lenticchie" to 100, "spinaci" to 80),
+        1 to listOf("grana_grattugiato" to 20, "yogurt_bianco" to 125, "mandorle" to 30),
+        2 to listOf("mandorle" to 25, "semi_zucca" to 20, "anacardi" to 25),
+        3 to listOf("banana" to 120, "kiwi" to 80, "albicocche_secche" to 30),
+        4 to listOf("grana_grattugiato" to 15, "crackers" to 25, "olive" to 30),
+        5 to listOf("semi_zucca" to 25, "anacardi" to 30, "ceci" to 100),
+        6 to listOf("kiwi" to 80, "arancia" to 150, "fragole" to 150),
+        7 to listOf("salmone_affumicato" to 50, "sgombro" to 80, "uova" to 60),
+        8 to listOf("mandorle" to 20, "nocciole" to 20, "semi_girasole" to 15),
+        9 to listOf("yogurt_bianco" to 125, "uova" to 60, "lenticchie" to 100),
+        10 to listOf("noci" to 15, "semi_chia" to 10, "semi_lino" to 10),
+    )
+
+    class Booster(val nutrient: String, val percent: Int, val foodId: String, val grams: Int)
+
+    /**
+     * The nutrient furthest below 80% at the end of the day, with a portion of a food that contains it.
+     * Sodium (the table is unsalted, cooking salt is not counted) and vitamin D (mostly from the sun) are only shown.
+     */
+    fun booster(micros: List<Triple<String, Int, Int>>, excluded: List<String>): Booster? {
+        val i = micros.indices.filter { it != 4 && it != 7 && micros[it].third < 80 }.minByOrNull { micros[it].third } ?: return null
+        val pick = boosters[i]?.firstOrNull { !MealPlanner.matches(it.first, excluded) } ?: return null
+        return Booster(micros[i].first, micros[i].third, pick.first, pick.second)
     }
 }

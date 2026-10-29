@@ -1,0 +1,286 @@
+# id|Italian name|category|piece g|flags (l = liquid)|allergens|USDA query
+# Query: terms separated by ';' must all appear in the description, '!' excludes a term,
+# '#123' picks an fdc_id directly. The shortest matching description wins.
+# Lines starting with '@' are hand-entered products (sport foods) with values per 100 g:
+# @id|name|category|piece|flags|allergens|kcal,c,p,f|iron,calcium,magnesium,potassium,sodium,zinc,vitC
+#
+# Cereali
+avena|Fiocchi d'avena|Cereali|0||glutine|cereals, oats, regular and quick, not fortified, dry
+riso|Riso basmati (crudo)|Cereali|0|||rice, white, long-grain, regular, raw, unenriched
+riso_integrale|Riso integrale (crudo)|Cereali|0|||rice, brown, long-grain, raw
+riso_cotto|Riso bianco (cotto)|Cereali|0|||rice, white, long-grain, regular, unenriched, cooked without salt
+pasta|Pasta (cruda)|Cereali|0||glutine|pasta, dry, unenriched
+pasta_cotta|Pasta (cotta)|Cereali|0||glutine|pasta, cooked, unenriched, without added salt
+pasta_integrale|Pasta integrale (cruda)|Cereali|0||glutine|pasta, whole-wheat, dry
+pasta_uovo|Pasta all'uovo (cruda)|Cereali|0||glutine,uova|noodles, egg, dry, unenriched
+couscous|Cous cous (crudo)|Cereali|0||glutine|couscous, dry
+quinoa|Quinoa (cruda)|Cereali|0|||quinoa, uncooked
+farro|Farro (crudo)|Cereali|0||glutine|spelt, uncooked
+orzo|Orzo perlato (crudo)|Cereali|0||glutine|barley, pearled, raw
+bulgur|Bulgur (crudo)|Cereali|0||glutine|bulgur, dry
+polenta|Farina di mais (polenta)|Cereali|0|||cornmeal, degermed, unenriched, yellow
+miglio|Miglio (crudo)|Cereali|0|||millet, raw
+grano_saraceno|Grano saraceno|Cereali|0|||buckwheat groats, roasted, dry
+farina|Farina di frumento 00|Cereali|0||glutine|wheat flour, white, all-purpose, unenriched
+farina_integrale|Farina integrale|Cereali|0||glutine|wheat flour, whole-grain
+corn_flakes|Corn flakes|Cereali|0|||#174648
+granola|Granola|Cereali|0||glutine,fruttasecca|cereals ready-to-eat, granola, homemade
+riso_soffiato|Riso soffiato|Cereali|0|||cereals ready-to-eat, rice, puffed, fortified
+gallette_riso|Gallette di riso|Cereali|10|||snacks, rice cakes, brown rice, plain
+gallette_mais|Gallette di mais|Cereali|10|||snacks, rice cakes, brown rice, corn
+# Pane e prodotti da forno
+pane|Pane|Pane e forno|0||glutine|bread, italian
+pane_integrale|Pane integrale|Pane e forno|0||glutine|bread, whole-wheat, commercially prepared
+pane_segale|Pane di segale|Pane e forno|0||glutine|bread, rye
+pane_bianco|Pane in cassetta|Pane e forno|25||glutine|bread, white, commercially prepared (includes soft bread crumbs)
+baguette|Baguette|Pane e forno|0||glutine|bread, french or vienna (includes sourdough)
+focaccia|Focaccia|Pane e forno|0||glutine|bread, pita, white, enriched
+piadina|Piadina|Pane e forno|0||glutine|tortillas, ready-to-bake or -fry, flour, refrigerated
+grissini|Grissini|Pane e forno|5||glutine|crackers, melba toast, plain
+fette_biscottate|Fette biscottate|Pane e forno|10||glutine|zwieback
+crackers|Crackers salati|Pane e forno|0||glutine|crackers, saltines (includes oyster, soda, soup)
+crackers_integrali|Crackers integrali|Pane e forno|0||glutine|crackers, whole-wheat
+bagel|Bagel|Pane e forno|100||glutine|bagels, plain, enriched, with calcium propionate (includes onion, poppy, sesame)
+cornetto|Cornetto|Pane e forno|50||glutine,lattosio,uova|croissants, butter
+pancake|Pancake|Pane e forno|40||glutine,lattosio,uova|pancakes, plain, prepared from recipe
+biscotti|Biscotti secchi|Pane e forno|8||glutine|cookies, vanilla wafers, lower fat
+biscotti_frollini|Frollini|Pane e forno|10||glutine,lattosio,uova|cookies, butter, commercially prepared, enriched
+pizza|Pizza margherita|Pane e forno|0||glutine,lattosio|pizza, cheese topping, regular crust, frozen, cooked
+torta|Crostata di frutta|Pane e forno|0||glutine,uova|pie, apple, commercially prepared, enriched flour
+pan_di_spagna|Pan di Spagna|Pane e forno|0||glutine,uova|cake, sponge, commercially prepared
+plumcake|Plumcake|Pane e forno|35||glutine,uova,lattosio|cake, pound, commercially prepared, butter
+# Legumi
+ceci|Ceci cotti|Legumi|0|||chickpeas (garbanzo beans, bengal gram), mature seeds, cooked, boiled, without salt
+ceci_secchi|Ceci secchi|Legumi|0|||chickpeas (garbanzo beans, bengal gram), mature seeds, raw
+lenticchie|Lenticchie cotte|Legumi|0|||lentils, mature seeds, cooked, boiled, without salt
+lenticchie_secche|Lenticchie secche|Legumi|0|||lentils, raw
+lenticchie_rosse|Lenticchie rosse secche|Legumi|0|||lentils, pink or red, raw
+fagioli|Fagioli borlotti cotti|Legumi|0|||beans, cranberry (roman), mature seeds, cooked, boiled, without salt
+fagioli_cannellini|Fagioli cannellini cotti|Legumi|0|||beans, white, mature seeds, cooked, boiled, without salt
+fagioli_neri|Fagioli neri cotti|Legumi|0|||beans, black, mature seeds, cooked, boiled, without salt
+fagioli_rossi|Fagioli rossi cotti|Legumi|0|||beans, kidney, red, mature seeds, cooked, boiled, without salt
+piselli|Piselli|Legumi|0|||peas, green, raw
+piselli_surgelati|Piselli surgelati cotti|Legumi|0|||peas, green, frozen, cooked, boiled, drained, without salt
+fave|Fave cotte|Legumi|0|||broadbeans (fava beans), mature seeds, cooked, boiled, without salt
+edamame|Edamame|Legumi|0||soia|edamame, frozen, prepared
+soia|Soia secca|Legumi|0||soia|soybeans, mature seeds, raw
+tofu|Tofu|Legumi|0||soia|tofu, firm, prepared with calcium sulfate and magnesium chloride (nigari)
+tempeh|Tempeh|Legumi|0||soia|tempeh
+hummus|Hummus|Legumi|0|||hummus, commercial
+latte_soia|Bevanda di soia|Bevande|0|l|soia|soymilk, original and vanilla, unfortified
+# Carne
+pollo|Petto di pollo (crudo)|Carne|0|||chicken, broiler or fryers, breast, skinless, boneless, meat only, raw
+pollo_cotto|Petto di pollo (cotto)|Carne|0|||chicken, broilers or fryers, breast, meat only, cooked, roasted
+pollo_coscia|Coscia di pollo|Carne|0|||chicken, broilers or fryers, dark meat, thigh, meat only, raw
+tacchino|Fesa di tacchino|Carne|0|||turkey, retail parts, breast, meat only, raw
+tacchino_macinato|Macinato di tacchino|Carne|0|||turkey, ground, raw
+manzo|Manzo magro|Carne|0|||#174055
+manzo_macinato|Macinato di manzo 10%|Carne|0|||beef, ground, 90% lean meat / 10% fat, raw
+bistecca|Bistecca di manzo|Carne|0|||beef, short loin, t-bone steak, separable lean and fat, trimmed to 1/8" fat, all grades, raw
+vitello|Fesa di vitello|Carne|0|||veal, leg (top round), separable lean only, raw
+maiale|Lonza di maiale|Carne|0|||pork, fresh, loin, center loin (chops), bone-in, separable lean only, raw
+filetto_maiale|Filetto di maiale|Carne|0|||pork, fresh, loin, tenderloin, separable lean only, raw
+agnello|Agnello|Carne|0|||#174313
+coniglio|Coniglio|Carne|0|||rabbit, domesticated, composite of cuts, raw
+cavallo|Carne di cavallo|Carne|0|||game meat, horse, raw
+fegato|Fegato di vitello|Carne|0|||veal, variety meats and by-products, liver, raw
+struzzo|Struzzo|Carne|0|||ostrich, inside leg, raw
+# Salumi
+prosciutto_cotto|Prosciutto cotto|Salumi|0|||ham, sliced, regular (approximately 11% fat)
+prosciutto_crudo|Prosciutto crudo|Salumi|0|||pork, cured, ham, boneless, extra lean (approximately 5% fat), roasted
+bresaola|Bresaola|Salumi|0|||beef, cured, dried
+fesa_tacchino_affettata|Fesa di tacchino affettata|Salumi|0|||turkey breast, sliced, prepackaged
+salame|Salame|Salumi|0|||salami, dry or hard, pork
+mortadella|Mortadella|Salumi|0|||bologna, pork
+wurstel|Würstel|Salumi|50|||frankfurter, beef, unheated
+# Pesce
+merluzzo|Merluzzo|Pesce|0||pesce|fish, cod, atlantic, raw
+salmone|Salmone|Pesce|0||pesce|fish, salmon, atlantic, farmed, raw
+salmone_affumicato|Salmone affumicato|Pesce|0||pesce|fish, salmon, chinook, smoked
+tonno|Tonno al naturale|Pesce|0||pesce|fish, tuna, light, canned in water, drained solids
+tonno_olio|Tonno sott'olio|Pesce|0||pesce|fish, tuna, light, canned in oil, drained solids
+tonno_fresco|Tonno fresco|Pesce|0||pesce|fish, tuna, fresh, yellowfin, raw
+sgombro|Sgombro|Pesce|0||pesce|fish, mackerel, atlantic, raw
+sardine|Sardine sott'olio|Pesce|0||pesce|fish, sardine, atlantic, canned in oil, drained solids with bone
+alici|Alici|Pesce|0||pesce|fish, anchovy, european, raw
+orata|Orata|Pesce|0||pesce|fish, sea bass, mixed species, raw
+branzino|Branzino|Pesce|0||pesce|fish, sea bass, mixed species, cooked, dry heat
+trota|Trota|Pesce|0||pesce|fish, trout, rainbow, farmed, raw
+sogliola|Sogliola|Pesce|0||pesce|fish, flatfish (flounder and sole species), raw
+nasello|Nasello|Pesce|0||pesce|fish, whiting, mixed species, raw
+pesce_spada|Pesce spada|Pesce|0||pesce|fish, swordfish, raw
+baccala|Baccalà|Pesce|0||pesce|fish, cod, atlantic, dried and salted
+gamberi|Gamberi|Pesce|0||crostacei|crustaceans, shrimp, raw
+calamari|Calamari|Pesce|0||pesce|mollusks, squid, mixed species, raw
+polpo|Polpo|Pesce|0||pesce|mollusks, octopus, common, raw
+cozze|Cozze|Pesce|0||pesce|mollusks, mussel, blue, raw
+vongole|Vongole|Pesce|0||pesce|mollusks, clam, mixed species, raw
+# Uova
+uova|Uova|Uova|60||uova|egg, whole, raw, fresh
+albume|Albume|Uova|33||uova|egg, white, raw, fresh
+tuorlo|Tuorlo|Uova|17||uova|egg, yolk, raw, fresh
+# Latte e yogurt
+latte|Latte parz. scremato|Latticini|0|l|lattosio|milk, lowfat, fluid, 1% milkfat, with added vitamin a and vitamin d
+latte_intero|Latte intero|Latticini|0|l|lattosio|milk, whole, 3.25% milkfat, with added vitamin d
+latte_scremato|Latte scremato|Latticini|0|l|lattosio|milk, nonfat, fluid, with added vitamin a and vitamin d (fat free or skim)
+latte_senza_lattosio|Latte senza lattosio|Latticini|0|l||milk, lowfat, fluid, 1% milkfat, with added nonfat milk solids, vitamin a and vitamin d
+yogurt|Yogurt greco 0%|Latticini|0||lattosio|yogurt, greek, plain, nonfat
+yogurt_greco_intero|Yogurt greco intero|Latticini|0||lattosio|yogurt, greek, plain, whole milk
+yogurt_bianco|Yogurt bianco intero|Latticini|125||lattosio|yogurt, plain, whole milk
+yogurt_magro|Yogurt magro|Latticini|125||lattosio|yogurt, plain, skim milk
+yogurt_frutta|Yogurt alla frutta|Latticini|125||lattosio|yogurt, fruit, low fat, 9 grams protein per 8 ounce
+kefir|Kefir|Latticini|0|l|lattosio|kefir, lowfat, plain, lifeway
+panna|Panna da cucina|Latticini|0||lattosio|cream, fluid, light (coffee cream or table cream)
+burro|Burro|Grassi|0||lattosio|butter, without salt
+# Formaggi
+fiocchi_latte|Fiocchi di latte|Formaggi|0||lattosio|cheese, cottage, lowfat, 2% milkfat
+ricotta|Ricotta|Formaggi|0||lattosio|cheese, ricotta, part skim milk
+mozzarella|Mozzarella|Formaggi|125||lattosio|cheese, mozzarella, whole milk
+mozzarella_light|Mozzarella light|Formaggi|125||lattosio|cheese, mozzarella, part skim milk
+parmigiano|Parmigiano|Formaggi|0||lattosio|cheese, parmesan, hard
+grana_grattugiato|Grana grattugiato|Formaggi|0||lattosio|cheese, parmesan, grated
+pecorino|Pecorino|Formaggi|0||lattosio|cheese, romano
+feta|Feta|Formaggi|0||lattosio|cheese, feta
+emmental|Emmental|Formaggi|0||lattosio|cheese, swiss
+provolone|Provolone|Formaggi|0||lattosio|cheese, provolone
+gorgonzola|Gorgonzola|Formaggi|0||lattosio|cheese, blue
+stracchino|Stracchino|Formaggi|0||lattosio|cheese, cream
+skyr|Skyr|Latticini|0||lattosio|yogurt, greek, plain, lowfat
+# Verdure
+zucchine|Zucchine|Verdure|0|||squash, summer, zucchini, includes skin, raw
+verdure|Verdure cotte miste|Verdure|0|||vegetables, mixed, frozen, cooked, boiled, drained, without salt
+spinaci|Spinaci|Verdure|0|||spinach, raw
+spinaci_cotti|Spinaci cotti|Verdure|0|||spinach, cooked, boiled, drained, without salt
+broccoli|Broccoli|Verdure|0|||broccoli, raw
+broccoli_cotti|Broccoli cotti|Verdure|0|||broccoli, cooked, boiled, drained, without salt
+cavolfiore|Cavolfiore|Verdure|0|||cauliflower, raw
+cavolo_nero|Cavolo nero|Verdure|0|||kale, raw
+cavolo_cappuccio|Cavolo cappuccio|Verdure|0|||cabbage, raw
+cavoletti|Cavoletti di Bruxelles|Verdure|0|||brussels sprouts, raw
+carote|Carote|Verdure|80|||carrots, raw
+pomodori|Pomodori|Verdure|120|||tomatoes, red, ripe, raw, year round average
+pomodorini|Pomodorini|Verdure|15|||tomatoes, red, ripe, raw, year round average
+passata|Passata di pomodoro|Verdure|0|||tomato products, canned, puree, without salt added
+pelati|Pomodori pelati|Verdure|0|||tomatoes, red, ripe, canned, packed in tomato juice
+peperoni|Peperoni|Verdure|150|||peppers, sweet, red, raw
+melanzane|Melanzane|Verdure|0|||eggplant, raw
+lattuga|Lattuga|Verdure|0|||lettuce, green leaf, raw
+insalata|Insalata mista|Verdure|0|||lettuce, cos or romaine, raw
+rucola|Rucola|Verdure|0|||arugula, raw
+radicchio|Radicchio|Verdure|0|||radicchio, raw
+cetrioli|Cetrioli|Verdure|0|||cucumber, with peel, raw
+finocchi|Finocchi|Verdure|0|||fennel, bulb, raw
+sedano|Sedano|Verdure|0|||celery, raw
+cipolle|Cipolle|Verdure|0|||onions, raw
+aglio|Aglio|Verdure|3|||garlic, raw
+funghi|Funghi champignon|Verdure|0|||mushrooms, white, raw
+asparagi|Asparagi|Verdure|0|||asparagus, raw
+fagiolini|Fagiolini|Verdure|0|||beans, snap, green, raw
+carciofi|Carciofi|Verdure|0|||artichokes, (globe or french), raw
+bietole|Bietole|Verdure|0|||chard, swiss, raw
+zucca|Zucca|Verdure|0|||pumpkin, raw
+barbabietola|Barbabietola cotta|Verdure|0|||beets, cooked, boiled, drained
+mais|Mais dolce in scatola|Verdure|0|||corn, sweet, yellow, canned, whole kernel, drained solids
+olive|Olive verdi|Verdure|4|||olives, pickled, canned or bottled, green
+patate|Patate|Verdure|0|||potatoes, flesh and skin, raw
+patate_lesse|Patate lesse|Verdure|0|||potatoes, boiled, cooked without skin, flesh, without salt
+patate_dolci|Patate dolci|Verdure|0|||sweet potato, raw, unprepared
+patate_dolci_cotte|Patate dolci al forno|Verdure|0|||sweet potato, cooked, baked in skin, flesh, without salt
+avocado|Avocado|Frutta|150|||avocados, raw, all commercial varieties
+# Frutta
+banana|Banana|Frutta|120|||bananas, raw
+mela|Mela|Frutta|150|||apples, raw, with skin
+pera|Pera|Frutta|160|||pears, raw
+arancia|Arancia|Frutta|150|||oranges, raw, all commercial varieties
+mandarino|Mandarino|Frutta|70|||tangerines, (mandarin oranges), raw
+pompelmo|Pompelmo|Frutta|250|||grapefruit, raw, pink and red, all areas
+limone|Limone|Frutta|0|||lemons, raw, without peel
+kiwi|Kiwi|Frutta|80|||kiwifruit, green, raw
+fragole|Fragole|Frutta|0|||strawberries, raw
+mirtilli|Mirtilli|Frutta|0|||blueberries, raw
+lamponi|Lamponi|Frutta|0|||raspberries, raw
+more|More|Frutta|0|||blackberries, raw
+ciliegie|Ciliegie|Frutta|0|||cherries, sweet, raw
+uva|Uva|Frutta|0|||grapes, red or green (european type, such as thompson seedless), raw
+pesca|Pesca|Frutta|150|||peaches, yellow, raw
+albicocca|Albicocca|Frutta|40|||apricots, raw
+prugna|Prugna|Frutta|60|||plums, raw
+anguria|Anguria|Frutta|0|||watermelon, raw
+melone|Melone|Frutta|0|||melons, cantaloupe, raw
+ananas|Ananas|Frutta|0|||pineapple, raw, all varieties
+mango|Mango|Frutta|0|||mangos, raw
+fichi|Fichi|Frutta|50|||figs, raw
+cachi|Cachi|Frutta|200|||persimmons, japanese, raw
+melograno|Melograno|Frutta|0|||pomegranates, raw
+datteri|Datteri|Frutta secca|8|||dates, medjool
+fichi_secchi|Fichi secchi|Frutta secca|20|||figs, dried, uncooked
+albicocche_secche|Albicocche secche|Frutta secca|8|||apricots, dried, sulfured, uncooked
+prugne_secche|Prugne secche|Frutta secca|10|||plums, dried (prunes), uncooked
+uvetta|Uvetta|Frutta secca|0|||#168164
+mirtilli_rossi_secchi|Mirtilli rossi secchi|Frutta secca|0|||cranberries, dried, sweetened
+# Frutta secca e semi
+mandorle|Mandorle|Frutta secca|0||fruttasecca|nuts, almonds
+noci|Noci|Frutta secca|0||fruttasecca|#170187
+nocciole|Nocciole|Frutta secca|0||fruttasecca|nuts, hazelnuts or filberts
+anacardi|Anacardi|Frutta secca|0||fruttasecca|nuts, cashew nuts, raw
+pistacchi|Pistacchi|Frutta secca|0||fruttasecca|nuts, pistachio nuts, raw
+arachidi|Arachidi|Frutta secca|0||fruttasecca|peanuts, all types, raw
+noci_brasile|Noci del Brasile|Frutta secca|0||fruttasecca|nuts, brazilnuts, dried, unblanched
+pinoli|Pinoli|Frutta secca|0||fruttasecca|nuts, pine nuts, dried
+burro_arachidi|Burro di arachidi|Frutta secca|0||fruttasecca|peanut butter, smooth style, without salt
+crema_mandorle|Crema di mandorle|Frutta secca|0||fruttasecca|nuts, almond butter, plain, without salt added
+semi_chia|Semi di chia|Frutta secca|0|||seeds, chia seeds, dried
+semi_lino|Semi di lino|Frutta secca|0|||seeds, flaxseed
+semi_zucca|Semi di zucca|Frutta secca|0|||seeds, pumpkin and squash seed kernels, dried
+semi_girasole|Semi di girasole|Frutta secca|0|||seeds, sunflower seed kernels, dried
+sesamo|Semi di sesamo|Frutta secca|0|||seeds, sesame seeds, whole, dried
+tahina|Tahina|Frutta secca|0|||seeds, sesame butter, tahini, from roasted and toasted kernels (most common type)
+cocco|Cocco disidratato|Frutta secca|0|||nuts, coconut meat, dried (desiccated), not sweetened
+# Grassi e condimenti
+olio|Olio extravergine|Grassi|0|||oil, olive, salad or cooking
+olio_semi|Olio di semi|Grassi|0|||oil, sunflower, linoleic (less than 60%)
+olio_cocco|Olio di cocco|Grassi|0|||oil, coconut
+maionese|Maionese|Grassi|0||uova|salad dressing, mayonnaise, regular
+pesto|Pesto|Grassi|0||lattosio,fruttasecca|#171579
+aceto|Aceto balsamico|Condimenti|0|||vinegar, balsamic
+ketchup|Ketchup|Condimenti|0|||catsup
+senape|Senape|Condimenti|0|||mustard, prepared, yellow
+salsa_soia|Salsa di soia|Condimenti|0|l|soia,glutine|soy sauce made from soy and wheat (shoyu)
+sale|Sale|Condimenti|0|||salt, table
+# Dolci e zuccheri
+miele|Miele|Dolci|0|||honey
+zucchero|Zucchero|Dolci|0|||sugars, granulated
+zucchero_canna|Zucchero di canna|Dolci|0|||sugars, brown
+marmellata|Marmellata|Dolci|0|||jams and preserves
+sciroppo_acero|Sciroppo d'acero|Dolci|0|||syrups, maple
+cioccolato_fondente|Cioccolato fondente 70%|Dolci|0|||chocolate, dark, 70-85% cacao solids
+cioccolato_latte|Cioccolato al latte|Dolci|0||lattosio|candies, milk chocolate
+crema_nocciole|Crema spalmabile alle nocciole|Dolci|0||lattosio,fruttasecca|#168000
+cacao|Cacao amaro|Dolci|0|||cocoa, dry powder, unsweetened
+gelato|Gelato alla crema|Dolci|0||lattosio|ice creams, vanilla
+caramelle|Caramelle gommose|Dolci|0|||candies, gumdrops, starch jelly pieces
+# Bevande
+acqua|Acqua|Bevande|0|l||beverages, water, tap, drinking
+caffe|Caffè espresso|Bevande|30|l||beverages, coffee, brewed, espresso, restaurant-prepared
+te|Tè|Bevande|0|l||beverages, tea, black, brewed, prepared with tap water
+succo_arancia|Spremuta d'arancia|Bevande|0|l||orange juice, raw
+succo_mela|Succo di mela|Bevande|0|l||apple juice, canned or bottled, unsweetened, without added ascorbic acid
+succo_frutta|Succo di pera|Bevande|0|l||#168186
+cola|Cola|Bevande|0|l||beverages, carbonated, cola, regular
+birra|Birra|Bevande|330|l|glutine|alcoholic beverage, beer, regular, all
+vino_rosso|Vino rosso|Bevande|0|l||alcoholic beverage, wine, table, red
+latte_mandorla|Bevanda di mandorla|Bevande|0|l|fruttasecca|beverages, almond milk, unsweetened, shelf stable
+latte_riso|Bevanda di riso|Bevande|0|l||beverages, rice milk, unsweetened
+isotonico|Bevanda isotonica|Sport|0|l||#175108
+cioccolata_calda|Latte al cacao|Bevande|0|l|lattosio|milk, chocolate, fluid, commercial, reduced fat
+whey|Proteine whey|Sport|30||lattosio|beverages, whey protein powder isolate
+# Sport (hand-entered, typical label values)
+@gel|Gel energetico|Sport|40|||250,62,0,0|0,0,0,30,500,0,0
+@gel_caffeina|Gel con caffeina|Sport|40|||250,62,0,0|0,0,0,30,500,0,0
+@barretta|Barretta energetica|Sport|40||glutine|380,65,6,9|2,40,60,300,150,1,0
+@barretta_proteica|Barretta proteica|Sport|50||lattosio|360,35,33,10|2,150,60,250,250,2,0
+@maltodestrine|Maltodestrine|Sport|0|||380,95,0,0|0,0,0,0,50,0,0
+@sali|Sali minerali (busta)|Sport|10|||330,80,0,0|0,0,120,1500,4000,0,90
+@chews|Caramelle energetiche (chews)|Sport|6|||330,80,0,0|0,0,0,30,500,0,0
+@gnocchi|Gnocchi di patate|Cereali|0||glutine|150,33,4,0.3|0.5,10,15,250,10,0.3,3
+@riso_barretta|Barretta di riso e miele|Sport|50|||330,72,4,3|0.5,10,30,100,200,0.5,0

@@ -3,7 +3,10 @@ package it.mattia.ciclismo.ui
 import it.mattia.ciclismo.data.AppData
 import it.mattia.ciclismo.engine.DayInfo
 import it.mattia.ciclismo.engine.DayPlan
+import it.mattia.ciclismo.engine.Foods
+import it.mattia.ciclismo.engine.Item
 import it.mattia.ciclismo.engine.Meal
+import it.mattia.ciclismo.engine.MealPlanner
 import it.mattia.ciclismo.engine.Planner
 import java.time.LocalDate
 import kotlin.math.roundToInt
@@ -15,6 +18,7 @@ class DayView(val d: AppData, val date: LocalDate) {
     val meals: List<Meal> = Planner.meals(d, info)
 
     private val eff = HashMap<String, Double>()
+    private val extra = HashMap<String, Item>()
     var correctionText: String = ""
         private set
 
@@ -36,11 +40,19 @@ class DayView(val d: AppData, val date: LocalDate) {
             if (st == "no") shortKcal += m.kcal
             else if (st == "si" && user < 1.0) shortKcal += m.kcal * (1 - user)
         }
-        val eatenIds = meals.filter { status(it) == "si" }.map { it.id }.toSet()
-        val advice = Planner.microAdvice(Planner.micros(meals, eatenIds) { scaleOf(it) })
+        // Micronutrient correction: the next meal still to eat gets a portion of a food rich in the weakest one.
+        var microNote: String? = null
+        val excluded = MealPlanner.expandExcluded(d.profile.excluded + "," + d.profile.allergies)
+        val b = Planner.booster(micros, excluded)
+        val next = meals.firstOrNull { status(it) == null }
+        if (b != null && next != null) {
+            val fd = Foods.get(b.foodId)
+            extra[key(next)] = Item(fd, b.grams)
+            microNote = "${b.nutrient} a fine giornata al ${b.percent}% del fabbisogno: in «${next.name}» aggiungo ${b.grams} g di ${fd.name.lowercase()}."
+        }
         correctionText = listOfNotNull(
             note.ifEmpty { "Nessuna correzione: stai seguendo il piano." },
-            advice,
+            microNote,
         ).joinToString("\n")
     }
 
@@ -48,7 +60,11 @@ class DayView(val d: AppData, val date: LocalDate) {
     fun status(m: Meal): String? = d.eaten[key(m)]
     fun userScale(m: Meal): Double = d.scale[key(m)] ?: 1.0
     fun scaleOf(m: Meal): Double = eff[key(m)] ?: 1.0
-    fun shown(m: Meal): Meal = m.scaled(scaleOf(m))
+    fun shown(m: Meal): Meal {
+        val s = m.scaled(scaleOf(m))
+        val e = extra[key(m)] ?: return s
+        return s.withItems(s.items + e)
+    }
 
     val eatenMeals: List<Meal> get() = meals.filter { status(it) == "si" }.map { shown(it) }
     val eatenKcal: Int get() = eatenMeals.sumOf { it.kcal }
@@ -57,8 +73,9 @@ class DayView(val d: AppData, val date: LocalDate) {
     val eatenF: Int get() = eatenMeals.sumOf { it.f }
     val plannedKcal: Int get() = meals.sumOf { it.kcal }
 
+    /** Eaten so far and full day, where skipped meals count as zero. */
     val micros: List<Triple<String, Int, Int>>
-        get() = Planner.micros(meals, meals.filter { status(it) == "si" }.map { it.id }.toSet()) { scaleOf(it) }
+        get() = Planner.micros(meals.filter { status(it) != "no" }.map { shown(it) }, eatenMeals)
 
     val waterGoal: Int get() = Planner.waterGoal(d, info)
     val water: Int get() = d.water[date.toString()] ?: 0

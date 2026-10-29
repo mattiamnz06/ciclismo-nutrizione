@@ -40,7 +40,9 @@ class Meal(
     val f: Int get() = items.sumOf { it.f }.roundToInt()
     val summary: String get() = items.take(4).joinToString(", ") { it.food.name.substringBefore(" (").lowercase() }
 
-    fun micro(i: Int, scale: Double = 1.0): Double = items.sumOf { it.food.micro[i] * it.grams / 100 } * scale
+    fun micro(i: Int, scale: Double = 1.0): Double = items.sumOf { (it.food.micro.getOrNull(i) ?: 0.0) * it.grams / 100 } * scale
+
+    fun withItems(list: List<Item>) = Meal(id, timeMin, name, kind, list, why, how, drink, alt, tag)
 }
 
 class MealCtx(
@@ -82,28 +84,37 @@ object MealPlanner {
         return if (parsed.size == n) parsed else defaultTimes(n)
     }
 
-    /** Expands intolerances and exclusions into food-name fragments. */
+    /** Expands intolerances and exclusions into food-name fragments and allergen tags. */
     fun expandExcluded(raw: String): List<String> {
         val out = mutableListOf<String>()
         raw.lowercase().split(',', ';', '\n').map { it.trim() }.filter { it.isNotEmpty() }.forEach { t ->
             out += t
             when {
-                t.contains("lattosio") || t.contains("latticin") -> out += listOf("latte", "yogurt")
-                t.contains("glutine") || t.contains("celiac") -> out += listOf("pasta", "pane", "avena")
-                t.contains("pesce") -> out += listOf("salmone", "tonno", "merluzzo")
-                t.contains("frutta secca") || t.contains("noci") -> out += "mandorle"
+                t.contains("lattosio") || t.contains("latticin") -> out += "lattosio"
+                t.contains("glutine") || t.contains("celiac") -> out += "glutine"
+                t.contains("pesce") -> out += listOf("pesce", "crostacei")
+                t.contains("crostace") || t.contains("frutti di mare") -> out += "crostacei"
+                t.contains("frutta secca") || t.contains("noci") -> out += "fruttasecca"
+                t.contains("uov") -> out += "uova"
+                t.contains("soia") -> out += "soia"
             }
         }
         return out
     }
 
-    private class Slot(val role: Char, val ids: List<String>, val fixed: Int = 0)
+    /** [byPiece]: a fixed slot that takes one piece of the chosen food (fruit) instead of [fixed] grams. */
+    private class Slot(val role: Char, val ids: List<String>, val fixed: Int = 0, val byPiece: Boolean = false)
 
     private fun fix(id: String, g: Int) = Slot('F', listOf(id), g)
 
-    private fun matches(id: String, terms: List<String>): Boolean {
-        val n = Foods.get(id).name.lowercase()
-        return terms.any { it.isNotBlank() && (n.contains(it) || id.contains(it)) }
+    private fun fix(ids: List<String>, g: Int) = Slot('F', ids, g)
+
+    private fun fruit(vararg ids: String) = Slot('F', ids.toList(), 120, byPiece = true)
+
+    fun matches(id: String, terms: List<String>): Boolean {
+        val fd = Foods.get(id)
+        val n = fd.name.lowercase()
+        return terms.any { t -> t.isNotBlank() && (n.contains(t) || id.contains(t) || t in fd.allergens) }
     }
 
     private fun pick(ids: List<String>, seed: Int, c: MealCtx): String {
@@ -116,37 +127,40 @@ object MealPlanner {
     private fun template(kind: Kind, c: MealCtx, seed: Int): List<Slot> {
         val rest = c.type == DayType.REST
         val load = c.type == DayType.LOAD
+        // Low-fibre vegetables on load days; more leafy greens on rest days.
+        val veg = if (load) listOf("zucchine", "carote", "pomodori") else listOf("verdure", "broccoli_cotti", "fagiolini", "zucchine", "spinaci_cotti", "peperoni")
+        val legumes = listOf("ceci", "lenticchie", "fagioli_cannellini")
         return when (kind) {
             Kind.BREAKFAST -> if (seed % 2 == 0)
-                listOf(fix("latte", 150), fix("banana", 120), Slot('C', listOf("avena")), Slot('P', listOf("yogurt")), Slot('L', listOf("mandorle")))
+                listOf(fix("latte", 150), fruit("banana", "kiwi", "mela"), Slot('C', listOf("avena", "corn_flakes", "avena")), Slot('P', listOf("yogurt", "skyr")), Slot('L', listOf("mandorle", "noci", "nocciole")))
             else
-                listOf(fix("arancia", 150), Slot('C', listOf("pane")), Slot('P', listOf("uova", "yogurt")), fix("miele", 15))
+                listOf(fruit("arancia", "kiwi", "pera"), Slot('C', listOf("pane", "fette_biscottate", "pane_integrale")), Slot('P', listOf("uova", "yogurt", "ricotta")), fix(listOf("miele", "marmellata"), 15))
             Kind.SNACK -> if (seed % 2 == 0)
-                listOf(fix("mela", 150), Slot('C', listOf("pane")), Slot('P', listOf("yogurt")), Slot('L', listOf("mandorle")))
+                listOf(fruit("mela", "pera", "pesca", "mandarino"), Slot('C', listOf("pane", "gallette_riso", "crackers")), Slot('P', listOf("yogurt", "skyr", "fiocchi_latte")), Slot('L', listOf("mandorle", "noci", "pistacchi")))
             else
-                listOf(fix("miele", 10), Slot('C', listOf("banana")), Slot('P', listOf("yogurt")), Slot('L', listOf("mandorle")))
+                listOf(fix("miele", 10), Slot('C', listOf("banana")), Slot('P', listOf("yogurt", "skyr")), Slot('L', listOf("mandorle", "anacardi")))
             Kind.LUNCH -> {
-                val s = mutableListOf(fix(if (load) "zucchine" else "verdure", if (load) 100 else 200))
-                if (rest) s += fix("spinaci", 100)
-                s += Slot('C', listOf("riso", "pasta", "patate"))
-                s += Slot('P', listOf("pollo", "tacchino", "tonno", "merluzzo"))
+                val s = mutableListOf(fix(veg, if (load) 100 else 200))
+                if (rest) s += fix(listOf("spinaci", "rucola", "cavolo_nero"), 100)
+                s += Slot('C', if (load) listOf("riso", "pasta", "patate", "gnocchi") else listOf("riso", "pasta", "patate", "couscous", "quinoa", "farro"))
+                s += Slot('P', listOf("pollo", "tacchino", "tonno", "merluzzo", "manzo", "uova"))
                 s += Slot('L', listOf("olio"))
-                s += Slot('D', if (rest) listOf("ceci") else listOf("pane"))
-                s += fix("kiwi", 80)
+                s += Slot('D', if (rest) legumes else listOf("pane"))
+                s += fruit("kiwi", "arancia", "mela", "fragole")
                 s
             }
             Kind.DINNER -> {
-                val s = mutableListOf(fix(if (load) "zucchine" else "verdure", if (load) 100 else 250))
-                s += Slot('C', listOf("pasta", "patate", "riso"))
-                s += Slot('P', listOf("salmone", "merluzzo", "uova", "pollo", "tacchino"))
+                val s = mutableListOf(fix(veg, if (load) 100 else 250))
+                s += Slot('C', if (load) listOf("pasta", "riso", "patate", "gnocchi") else listOf("pasta", "patate", "riso", "patate_dolci", "farro"))
+                s += Slot('P', listOf("salmone", "merluzzo", "uova", "pollo", "tacchino", "orata", "trota", "sgombro", "tofu"))
                 s += Slot('L', listOf("olio"))
-                s += Slot('D', if (rest) listOf("ceci") else listOf("pane"))
-                s += fix("arancia", 150)
+                s += Slot('D', if (rest) legumes else listOf("pane"))
+                s += fruit("arancia", "pera", "mela", "mandarino")
                 s
             }
-            Kind.PRE -> listOf(fix("banana", 120), Slot('C', listOf("pane")), fix("miele", 15), Slot('P', listOf("yogurt")))
-            Kind.POST -> listOf(fix("latte", 200), fix("banana", 120), Slot('C', listOf("pane")), fix("miele", 20), Slot('P', listOf("yogurt")))
-            Kind.SUPPER -> listOf(Slot('C', listOf("pane")), fix("miele", 20), fix("banana", 120), Slot('P', listOf("yogurt")))
+            Kind.PRE -> listOf(fix("banana", 120), Slot('C', listOf("pane", "fette_biscottate", "gallette_riso")), fix(listOf("miele", "marmellata"), 15), Slot('P', listOf("yogurt", "skyr")))
+            Kind.POST -> listOf(fix("latte", 200), fix("banana", 120), Slot('C', listOf("pane", "corn_flakes")), fix("miele", 20), Slot('P', listOf("yogurt", "skyr")))
+            Kind.SUPPER -> listOf(Slot('C', listOf("pane", "fette_biscottate")), fix("miele", 20), fix("banana", 120), Slot('P', listOf("yogurt")))
         }
     }
 
@@ -163,13 +177,14 @@ object MealPlanner {
         var rp = tp
         var rf = tf
         val grams = DoubleArray(slots.size)
-        val foods = slots.mapIndexed { i, s -> if (s.role == 'F') s.ids[0] else pick(s.ids, seed + i, c) }
+        val foods = slots.mapIndexed { i, s -> pick(s.ids, seed + i, c) }
         for ((i, s) in slots.withIndex()) {
             if (s.role != 'F') continue
             if (matches(foods[i], c.excluded)) continue
             val fd = Foods.get(foods[i])
-            grams[i] = s.fixed.toDouble()
-            rc -= fd.c * s.fixed / 100; rp -= fd.p * s.fixed / 100; rf -= fd.f * s.fixed / 100
+            val g = if (s.byPiece && fd.piece > 0) fd.piece else s.fixed
+            grams[i] = g.toDouble()
+            rc -= fd.c * g / 100; rp -= fd.p * g / 100; rf -= fd.f * g / 100
         }
         rc = rc.coerceAtLeast(0.0)
         val hasD = slots.any { it.role == 'D' }
