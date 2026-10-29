@@ -6,8 +6,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.CameraSelector
 import androidx.camera.core.ImageAnalysis
-import androidx.camera.core.Preview
-import androidx.camera.lifecycle.ProcessCameraProvider
+import androidx.camera.view.CameraController
+import androidx.camera.view.LifecycleCameraController
 import androidx.camera.view.PreviewView
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -70,19 +70,14 @@ private fun CameraPreview(onResult: (String) -> Unit) {
     }
     var done by remember { mutableStateOf(false) }
     val result by rememberUpdatedState(onResult)
-    val provider by produceState<ProcessCameraProvider?>(null) {
-        val f = ProcessCameraProvider.getInstance(ctx)
-        f.addListener({ value = f.get() }, ContextCompat.getMainExecutor(ctx))
-    }
-    val view = remember { PreviewView(ctx) }
-    DisposableEffect(provider) {
-        val p = provider
-        if (p != null) {
-            val preview = Preview.Builder().build().also { it.setSurfaceProvider(view.surfaceProvider) }
-            val analysis = ImageAnalysis.Builder().setBackpressureStrategy(ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST).build()
-            analysis.setAnalyzer(executor) { proxy ->
+    val controller = remember {
+        LifecycleCameraController(ctx).apply {
+            cameraSelector = CameraSelector.DEFAULT_BACK_CAMERA
+            setEnabledUseCases(CameraController.IMAGE_ANALYSIS)
+            imageAnalysisBackpressureStrategy = ImageAnalysis.STRATEGY_KEEP_ONLY_LATEST
+            setImageAnalysisAnalyzer(executor) { proxy ->
                 val media = proxy.image
-                if (media == null || done) { proxy.close(); return@setAnalyzer }
+                if (media == null || done) { proxy.close(); return@setImageAnalysisAnalyzer }
                 scanner.process(InputImage.fromMediaImage(media, proxy.imageInfo.rotationDegrees))
                     .addOnSuccessListener { codes ->
                         val v = codes.firstNotNullOfOrNull { it.rawValue }
@@ -90,13 +85,14 @@ private fun CameraPreview(onResult: (String) -> Unit) {
                     }
                     .addOnCompleteListener { proxy.close() }
             }
-            p.unbindAll()
-            p.bindToLifecycle(owner, CameraSelector.DEFAULT_BACK_CAMERA, preview, analysis)
         }
-        onDispose { p?.unbindAll() }
     }
-    DisposableEffect(Unit) {
-        onDispose { scanner.close(); executor.shutdown() }
+    DisposableEffect(owner) {
+        controller.bindToLifecycle(owner)
+        onDispose { controller.unbind(); scanner.close(); executor.shutdown() }
     }
-    AndroidView(factory = { view }, modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.scrim))
+    AndroidView(
+        factory = { c -> PreviewView(c).also { it.controller = controller } },
+        modifier = Modifier.fillMaxSize().background(MaterialTheme.colorScheme.scrim),
+    )
 }

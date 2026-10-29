@@ -44,8 +44,6 @@ dependencies {
     implementation("androidx.camera:camera-camera2:$camerax")
     implementation("androidx.camera:camera-lifecycle:$camerax")
     implementation("androidx.camera:camera-view:$camerax")
-    // CameraX returns a ListenableFuture but does not expose the interface to the app.
-    implementation("com.google.guava:listenablefuture:1.0")
     implementation("com.google.mlkit:barcode-scanning:17.3.0")
 
     testImplementation("junit:junit:4.13.2")
