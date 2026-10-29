@@ -28,7 +28,7 @@ fun MealCard(
     AppCard(accent = status == "si", onClick = onToggle) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Text(m.time, Modifier.width(48.dp), fontWeight = FontWeight.SemiBold, fontSize = 13.sp, color = MaterialTheme.colorScheme.primary)
-            Column(Modifier.weight(1f)) {
+            Column(Modifier.weight(1f).padding(end = 8.dp)) {
                 Strong(m.name, 14)
                 Muted(m.summary)
             }
