@@ -38,7 +38,7 @@ fun FoodPicker(title: String, onAdd: (Food, Int) -> Unit, onClose: () -> Unit) {
         scope.launch {
             OpenFoodFacts.lookup(clean)
                 .onSuccess { Repo.saveFood(it); chosen = it; message = "" }
-                .onFailure { message = (it.message ?: "Errore di rete") + ". Puoi inserirlo a mano con «Nuovo alimento»." }
+                .onFailure { message = (it.message ?: "Errore di rete") + ". Puoi inserirlo a mano con «A mano»." }
         }
     }
 
@@ -56,7 +56,7 @@ fun FoodPicker(title: String, onAdd: (Food, Int) -> Unit, onClose: () -> Unit) {
                         Field("Cerca alimento", query) { query = it }
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             Btn("Codice a barre", Modifier.weight(1f), primary = false) { message = ""; scanning = true }
-                            Btn("Nuovo alimento", Modifier.weight(1f), primary = false) { creating = true }
+                            Btn("A mano", Modifier.weight(1f), primary = false) { creating = true }
                         }
                         Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
                             Field("Codice a mano", code, numeric = true, modifier = Modifier.weight(1f)) { code = it }

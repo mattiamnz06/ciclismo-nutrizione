@@ -32,12 +32,9 @@ adb exec-out screencap -p > smoke-$((n+1))-impostazioni.png
 
 # Notification settings with the master switch on.
 tap_text "Notifiche"; sleep 2
-adb shell uiautomator dump /sdcard/ui.xml >/dev/null 2>&1
-adb pull /sdcard/ui.xml ui.xml >/dev/null 2>&1
-sw=$(grep -o 'class="android.widget.Switch"[^>]*bounds="\[[0-9]*,[0-9]*\]\[[0-9]*,[0-9]*\]"' ui.xml | head -1 | grep -o 'bounds="[^"]*"' | grep -o '[0-9]*' | tr '\n' ' ')
-set -- $sw
-if [ $# -eq 4 ]; then adb shell input tap $(( ($1 + $3) / 2 )) $(( ($2 + $4) / 2 )); fi
-sleep 2
+tap_text "Notifiche attive"; sleep 2
+tap_text "Allow" || tap_text "Consenti"; sleep 1
+tap_text "Pasti"; sleep 2
 adb exec-out screencap -p > smoke-20-notifiche.png
 tap_text "Indietro"; sleep 1; tap_text "Chiudi"; sleep 1
 
@@ -47,6 +44,7 @@ tap_text "Tocca un pasto per grammi, perché e alternative"
 adb shell input tap 540 700; sleep 2
 adb exec-out screencap -p > smoke-21-pasto-aperto.png
 tap_text "Modifica alimenti"; sleep 2
+adb shell input swipe 540 1700 540 700 400; sleep 2
 adb exec-out screencap -p > smoke-22-modifica.png
 tap_text "Aggiungi alimento"; sleep 2
 adb shell input text "parmig"; sleep 2

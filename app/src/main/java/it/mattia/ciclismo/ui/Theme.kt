@@ -38,6 +38,9 @@ private val Light = lightColorScheme(
     background = Color(0xFFF6F7F9), onBackground = Graphite,
     surface = Color.White, onSurface = Graphite,
     surfaceVariant = Color(0xFFE3E7EC), onSurfaceVariant = Color(0xFF52606D),
+    // Neutral-green containers instead of the default lavender (tonal buttons, chips, bottom bar).
+    secondaryContainer = Color(0xFFE4EBD3), onSecondaryContainer = Graphite,
+    surfaceContainer = Color(0xFFEEF1EA), surfaceContainerLow = Color(0xFFF3F5F0), surfaceContainerHigh = Color(0xFFE8ECE3),
 )
 
 @Composable
