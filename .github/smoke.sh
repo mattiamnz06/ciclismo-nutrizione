@@ -33,7 +33,7 @@ adb exec-out screencap -p > smoke-$((n+1))-impostazioni.png
 # Notification settings with the master switch on.
 tap_text "Notifiche"; sleep 2
 tap_text "Notifiche attive"; sleep 2
-tap_text "Allow" || tap_text "Consenti"; sleep 1
+tap_text "ALLOW" || tap_text "Allow" || tap_text "CONSENTI"; sleep 1
 tap_text "Pasti"; sleep 2
 adb exec-out screencap -p > smoke-20-notifiche.png
 tap_text "Indietro"; sleep 1; tap_text "Chiudi"; sleep 1

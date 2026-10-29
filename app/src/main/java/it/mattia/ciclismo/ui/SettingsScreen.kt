@@ -2,6 +2,7 @@ package it.mattia.ciclismo.ui
 
 import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -17,6 +18,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.health.connect.client.PermissionController
 import it.mattia.ciclismo.data.AppData
 import it.mattia.ciclismo.data.Repo
@@ -213,7 +215,9 @@ private fun NotifSection() {
     val p = Repo.data.profile
     val perm = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) {}
     fun change(f: (it.mattia.ciclismo.data.Profile) -> it.mattia.ciclismo.data.Profile) {
-        if (Build.VERSION.SDK_INT >= 33) perm.launch(Manifest.permission.POST_NOTIFICATIONS)
+        val missing = Build.VERSION.SDK_INT >= 33 &&
+            ContextCompat.checkSelfPermission(ctx, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED
+        if (missing) perm.launch(Manifest.permission.POST_NOTIFICATIONS)
         Repo.setProfile(f)
         Notify.scheduleAll(ctx)
     }
