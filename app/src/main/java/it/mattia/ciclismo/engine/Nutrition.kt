@@ -54,7 +54,7 @@ object Nutrition {
     }
 
     /** Day plan: BMR x 1.4 + ride kcal, goal adjustment, carbs and protein by g/kg, fat fills the rest. */
-    fun dayPlan(b: Body, type: DayType, goal: Goal, rideKj: Double): DayPlan {
+    fun dayPlan(b: Body, type: DayType, goal: Goal, rideKj: Double, carbPerKg: Double? = null): DayPlan {
         val bmr = bmr(b)
         val base = bmr * 1.4
         var kcal = base + rideKj
@@ -63,9 +63,16 @@ object Nutrition {
             Goal.MASS -> 300.0
             else -> 0.0
         }
-        val carb = type.carbPerKg * b.weightKg
+        var carb = (carbPerKg ?: type.carbPerKg) * b.weightKg
         val protein = type.proteinPerKg * b.weightKg
-        val fat = ((kcal - carb * 4 - protein * 4) / 9).coerceAtLeast(b.weightKg * 0.8)
+        var fat = ((kcal - carb * 4 - protein * 4) / 9).coerceAtLeast(b.weightKg * 0.8)
+        val fatCap = b.weightKg * 1.5
+        if (fat > fatCap) {
+            // Surplus energy goes to carbs (up to 12 g/kg) rather than to unrealistic fat amounts.
+            carb = (carb + (fat - fatCap) * 9 / 4).coerceAtMost(b.weightKg * 12)
+            fat = fatCap
+            kcal = carb * 4 + protein * 4 + fat * 9
+        }
         return DayPlan(kcal.toInt(), carb.toInt(), protein.toInt(), fat.toInt(), bmr.toInt(), base.toInt())
     }
 

@@ -1,54 +1,90 @@
 package it.mattia.ciclismo.ui
 
-import android.content.Context
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import it.mattia.ciclismo.engine.*
+import it.mattia.ciclismo.data.Repo
+import it.mattia.ciclismo.sync.Notify
+import it.mattia.ciclismo.sync.Strava
+import java.time.LocalDate
 
 private val TABS = listOf("Oggi", "Giri", "Settimana", "Piano", "Diario", "Forma")
 
-/** Profile kept in SharedPreferences for now; it moves to Room in the next stage. */
-class ProfileStore(context: Context) {
-    private val p = context.getSharedPreferences("profile", Context.MODE_PRIVATE)
-    fun load() = Profile(
-        sex = if (p.getString("sex", "M") == "F") Sex.F else Sex.M,
-        age = p.getInt("age", 30), height = p.getFloat("height", 180f).toDouble(),
-        weight = p.getFloat("weight", 74f).toDouble(), ftp = p.getInt("ftp", 260),
-        goal = Goal.valueOf(p.getString("goal", Goal.PERFORMANCE.name)!!),
-    )
-    fun save(x: Profile) = p.edit()
-        .putString("sex", x.sex.name).putInt("age", x.age).putFloat("height", x.height.toFloat())
-        .putFloat("weight", x.weight.toFloat()).putInt("ftp", x.ftp).putString("goal", x.goal.name).apply()
-}
-
-data class Profile(val sex: Sex, val age: Int, val height: Double, val weight: Double, val ftp: Int, val goal: Goal) {
-    fun body() = Body(sex, age, height, weight)
+class NavState {
+    var tab by mutableIntStateOf(0)
+    var settings by mutableStateOf(false)
+    var section by mutableStateOf<String?>(null)
+    var diaryDate by mutableStateOf(LocalDate.now())
+    var openMeal by mutableStateOf<String?>(null)
+    var rideId by mutableStateOf<String?>(null)
+    var manual by mutableStateOf(false)
+    var planDate by mutableStateOf<LocalDate?>(null)
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CiclismoApp(context: Context) {
-    val store = remember { ProfileStore(context) }
-    var profile by remember { mutableStateOf(store.load()) }
-    var tab by remember { mutableIntStateOf(0) }
-    var settings by remember { mutableStateOf(false) }
+fun CiclismoApp() {
+    val nav = remember { NavState() }
+    val ctx = LocalContext.current
+    val scope = rememberCoroutineScope()
+    val p = Repo.data.profile
+
+    LaunchedEffect(Unit) {
+        Notify.scheduleAll(ctx, Repo.data.profile)
+        if (Repo.data.stravaRefresh.isNotEmpty()) {
+            Strava.sync().onSuccess { n -> if (n > 0) Repo.syncMessage = "Importati $n nuovi giri da Strava" }
+        }
+    }
+    val code = Repo.stravaCode
+    LaunchedEffect(code) {
+        if (code != null) {
+            Repo.stravaCode = null
+            Repo.syncMessage = "Collegamento a Strava…"
+            Strava.exchange(code).fold(
+                { syncStravaNow(scope) },
+                { Repo.syncMessage = "Collegamento non riuscito: ${it.message}" },
+            )
+            nav.settings = true
+            nav.section = "sync"
+        }
+    }
+
+    BackHandler(enabled = nav.settings || nav.rideId != null || nav.manual) {
+        when {
+            nav.settings && nav.section != null -> nav.section = null
+            nav.settings -> nav.settings = false
+            nav.manual -> nav.manual = false
+            else -> nav.rideId = null
+        }
+    }
+
+    if (!p.onboarded) {
+        Onboarding()
+        return
+    }
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(if (settings) "Impostazioni" else TABS[tab], fontWeight = FontWeight.Bold) },
+                title = {
+                    Text(
+                        if (nav.settings) sectionTitle(nav.section) else TABS[nav.tab],
+                        fontWeight = FontWeight.Bold, fontSize = 22.sp,
+                    )
+                },
                 actions = {
-                    TextButton(onClick = { settings = !settings }) { Text(if (settings) "Chiudi" else "Impostazioni") }
+                    TextButton(onClick = {
+                        if (nav.settings && nav.section != null) nav.section = null
+                        else { nav.settings = !nav.settings; nav.section = null }
+                    }) { Text(if (nav.settings) (if (nav.section != null) "Indietro" else "Chiudi") else "Impostazioni") }
                 },
             )
         },
@@ -56,8 +92,8 @@ fun CiclismoApp(context: Context) {
             NavigationBar {
                 TABS.forEachIndexed { i, t ->
                     NavigationBarItem(
-                        selected = !settings && tab == i,
-                        onClick = { tab = i; settings = false },
+                        selected = !nav.settings && nav.tab == i,
+                        onClick = { nav.tab = i; nav.settings = false; nav.section = null },
                         icon = { Text(t.take(1), fontWeight = FontWeight.Bold) },
                         label = { Text(t, fontSize = 10.sp, maxLines = 1) },
                     )
@@ -67,95 +103,37 @@ fun CiclismoApp(context: Context) {
     ) { pad ->
         Column(Modifier.padding(pad).padding(horizontal = 16.dp).verticalScroll(rememberScrollState())) {
             when {
-                settings -> SettingsScreen(profile) { profile = it; store.save(it) }
-                tab == 0 -> TodayScreen(profile)
-                else -> Placeholder(TABS[tab])
+                nav.settings -> SettingsScreen(nav)
+                nav.tab == 0 -> TodayScreen(nav)
+                nav.tab == 1 -> RidesScreen(nav)
+                nav.tab == 2 -> WeekScreen(nav)
+                nav.tab == 3 -> PlanScreen(nav)
+                nav.tab == 4 -> DiaryScreen(nav)
+                else -> FormScreen(nav)
             }
         }
     }
 }
 
 @Composable
-private fun Placeholder(name: String) {
-    InfoCard("$name", "In arrivo nelle prossime versioni (vedi roadmap nel report).")
-}
-
-@Composable
-private fun InfoCard(title: String, body: String) {
-    Card(Modifier.fillMaxWidth().padding(vertical = 6.dp), shape = RoundedCornerShape(16.dp)) {
-        Column(Modifier.padding(16.dp)) {
-            Text(title, fontWeight = FontWeight.SemiBold)
-            Spacer(Modifier.height(4.dp))
-            Text(body, color = MaterialTheme.colorScheme.onSurfaceVariant)
+private fun Onboarding() {
+    var step by remember { mutableIntStateOf(0) }
+    val titles = listOf("Profilo", "Corpo", "Potenza")
+    val ids = listOf("profilo", "corpo", "potenza")
+    Scaffold { pad ->
+        Column(Modifier.padding(pad).padding(16.dp).verticalScroll(rememberScrollState())) {
+            Text("Benvenuto", fontSize = 30.sp, fontWeight = FontWeight.Bold)
+            Muted("Tre passi per calcolare calorie e macro sui tuoi dati. Potrai cambiare tutto in Impostazioni.", 13)
+            Spacer(Modifier.height(12.dp))
+            Strong("${step + 1} di 3 · ${titles[step]}", 16)
+            SectionContent(ids[step])
+            Row(Modifier.fillMaxWidth().padding(top = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                if (step > 0) Btn("Indietro", Modifier.weight(1f), primary = false) { step-- }
+                Btn(if (step == 2) "Inizia" else "Avanti", Modifier.weight(1f)) {
+                    if (step == 2) Repo.setProfile { it.copy(onboarded = true) } else step++
+                }
+            }
+            TextButton(onClick = { Repo.setProfile { it.copy(onboarded = true) } }) { Text("Salta per ora") }
         }
     }
-}
-
-@Composable
-private fun TodayScreen(p: Profile) {
-    // Demo ride until Strava/manual rides land in the next stage: sweet spot, 1 h 15 at 200 W.
-    val rideKj = Metrics.kilojoules(200.0, 4500)
-    val rideNp = Metrics.npFromAverage(200.0)
-    val rideIf = Metrics.intensityFactor(rideNp, p.ftp.toDouble())
-    val rideTss = Metrics.tss(4500, rideIf)
-    val type = Nutrition.dayType(rideTss, 1.25)
-    val plan = Nutrition.dayPlan(p.body(), type, p.goal, rideKj)
-    val fuel = Nutrition.rideFuel(75, intense = true)
-
-    InfoCard(
-        "Calorie del giorno · ${type.label}",
-        "${plan.kcal} kcal\nMetabolismo ${plan.bmr} x 1,4 = ${plan.baseKcal} + giro ${rideKj.toInt()} kJ",
-    )
-    InfoCard(
-        "Macro",
-        "Carboidrati ${plan.carbG} g\nProteine ${plan.proteinG} g\nGrassi ${plan.fatG} g",
-    )
-    InfoCard(
-        "Giro previsto (esempio)",
-        "NP %.0f W · IF %.2f · TSS %.0f\nIn sella: %d g/h carbo, %d ml/h, %d mg/h sodio".format(
-            rideNp, rideIf, rideTss, fuel.carbGPerH, fuel.fluidMlPerH, fuel.sodiumMgPerH,
-        ),
-    )
-    InfoCard("W/kg", "FTP %d W = %.2f W/kg".format(p.ftp, Metrics.wattsPerKg(p.ftp.toDouble(), p.weight)))
-}
-
-@OptIn(ExperimentalLayoutApi::class)
-@Composable
-private fun SettingsScreen(p: Profile, onChange: (Profile) -> Unit) {
-    var age by remember { mutableStateOf(p.age.toString()) }
-    var height by remember { mutableStateOf(p.height.toInt().toString()) }
-    var weight by remember { mutableStateOf(p.weight.toString()) }
-    var ftp by remember { mutableStateOf(p.ftp.toString()) }
-
-    fun push(sex: Sex = p.sex, goal: Goal = p.goal) = onChange(
-        Profile(
-            sex, age.toIntOrNull() ?: p.age, height.toDoubleOrNull() ?: p.height,
-            weight.replace(',', '.').toDoubleOrNull() ?: p.weight, ftp.toIntOrNull() ?: p.ftp, goal,
-        ),
-    )
-
-    @Composable
-    fun field(label: String, value: String, set: (String) -> Unit) = OutlinedTextField(
-        value = value, onValueChange = { set(it); push() }, label = { Text(label) },
-        singleLine = true, keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal),
-        modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp),
-    )
-
-    Text("Profilo e corpo", fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 8.dp))
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Sex.entries.forEach { s ->
-            FilterChip(selected = p.sex == s, onClick = { push(sex = s) }, label = { Text(if (s == Sex.M) "Uomo" else "Donna") })
-        }
-    }
-    field("Età", age) { age = it }
-    field("Altezza (cm)", height) { height = it }
-    field("Peso (kg)", weight) { weight = it }
-    field("FTP (W)", ftp) { ftp = it }
-    Text("Obiettivo", fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 12.dp))
-    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        Goal.entries.forEach { g ->
-            FilterChip(selected = p.goal == g, onClick = { push(goal = g) }, label = { Text(g.label) })
-        }
-    }
-    Spacer(Modifier.height(24.dp))
 }
