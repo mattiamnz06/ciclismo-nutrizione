@@ -1,0 +1,546 @@
+
+# Report di progetto: app ciclismo e nutrizione
+ · 
+
+## 1. Sintesi
+L'app Android legge i tuoi giri in bici (watt, km, calorie, orario) e il tuo profilo fisico, e ti dice ogni giorno cosa mangiare, quanto, quando e perché, oltre a idratazione, integrazione e carico dei carboidrati.
+Decisioni già prese:
+Tema
+ | Decisione
+ | 
+Piattaforma
+ | App Android nativa (Kotlin), Samsung recente, ultima versione di Android
+ | 
+Utente
+ | Uso personale, un solo ciclista
+ | 
+Potenza
+ | Power meter vero sulla bici
+ | 
+Fonti giri
+ | Strava, Garmin, inserimento manuale
+ | 
+Dati personali
+ | Inseriti nel menu Impostazioni, aggiornabili da Health Connect
+ | 
+Obiettivo
+ | Tutti selezionabili: performance, dimagrimento, mantenimento, massa
+ | 
+Alimentazione
+ | L'app decide il menu; il Diario registra cosa mangi davvero
+ | 
+Restrizioni
+ | Nessuna
+ | 
+Calendario
+ | Settimanale
+ | 
+Livello tecnico
+ | Professionale: NP, IF, TSS, CTL, ATL, TSB e altre metriche
+ | 
+Tema grafico
+ | Automatico (segue il telefono)
+ | 
+Costi
+ | Zero: API gratuite per uso personale
+ | 
+Documenti collegati: le specifiche iniziali e il prototipo interattivo. Questo report li aggiorna e li sostituisce dove sono diversi.
+
+## 2. Piattaforma, stile e costi
+Sistema: Android 15 o successivo, ottimizzato per Samsung (schermo 6-6,8").
+Linguaggio e UI: Kotlin con Jetpack Compose e Material 3.
+Tema: chiaro o scuro automatico; il prototipo mostra la versione scura (fondo grafite, accento verde lime, numeri in carattere condensato sportivo).
+Lingua: italiano, unità metriche (kg, km, kcal, ml).
+Costi: nessuno. Strava e Health Connect sono gratuiti per uso personale; l'app si installa sul telefono da Android Studio senza pubblicarla sul Play Store.
+Privacy: tutti i dati restano sul telefono, nessun server esterno.
+
+## 3. Fonti dei dati
+Ogni dato ha una fonte automatica e una manuale di riserva; il valore manuale vince sempre su quello sincronizzato.
+Fonte
+ | Cosa porta
+ | Come si collega
+ | Costo
+ | 
+Strava
+ | Giri completi con stream di watt, FC, cadenza, GPS, dislivello
+ | API OAuth con le tue chiavi personali (strava.com/settings/api)
+ | Gratis per uso personale
+ | 
+Garmin
+ | Giri dal ciclocomputer
+ | Garmin Connect → Strava (consigliato), oppure Health Connect
+ | Gratis; le API Garmin dirette richiedono approvazione aziendale
+ | 
+Health Connect
+ | Peso, % grasso, sonno, FC a riposo
+ | Permesso Android, legge Samsung Health e bilance smart
+ | Gratis, senza chiavi
+ | 
+Manuale
+ | Qualsiasi giro o dato mancante
+ | Form nell'app
+ | -
+ | 
+Campi di ogni giro
+Gruppo
+ | Campi
+ | Se mancano
+ | 
+Base
+ | Data, orario di partenza, durata, km, dislivello
+ | Obbligatori nel manuale
+ | 
+Potenza
+ | Watt medi, NP, watt max, kJ
+ | NP = watt medi × 1,05 se manca lo stream
+ | 
+Carico
+ | IF, VI, TSS
+ | Calcolati da NP e FTP
+ | 
+Cuore e pedalata
+ | FC media e max, cadenza media, deriva Pw:FC
+ | Facoltativi
+ | 
+Energia
+ | Calorie bruciate, carboidrati bruciati stimati
+ | Calorie ≈ kJ
+ | 
+Alimentazione in sella
+ | Carboidrati assunti (g), liquidi bevuti (ml)
+ | Facoltativi
+ | 
+Contesto
+ | Temperatura, sforzo percepito RPE 1-10, note
+ | Facoltativi
+ | 
+Recupero
+ | Ore e qualità del sonno della notte prima
+ | Da Health Connect o a mano
+ | 
+
+## 4. Menu Impostazioni
+Tutti i dati che inserisci tu stanno nel menu Impostazioni, aperto dall'icona a ingranaggio in alto a destra in ogni schermata. Alla prima apertura dell'app un percorso guidato compila le prime tre sezioni.
+Sezione
+ | Contenuto
+ | Fonte
+ | 
+Profilo
+ | Nome, età, sesso, altezza
+ | Manuale
+ | 
+Corpo
+ | Peso, % grasso, FC a riposo, FC max, storico peso
+ | Health Connect (bilancia smart) o manuale
+ | 
+Potenza
+ | FTP, zone di potenza (Coggan), zone cardio, peso della bici
+ | Manuale; FTP ricalcolata dai migliori sforzi con la tua conferma
+ | 
+Obiettivo
+ | Performance, dimagrimento, mantenimento o massa; peso obiettivo e data
+ | Manuale
+ | 
+Alimentazione
+ | Intolleranze o allergie, cibi da escludere, cibi preferiti, numero di pasti al giorno, orari abituali dei pasti
+ | Manuale
+ | 
+Integratori
+ | Gel, barrette e isotonici che usi (con grammi di carboidrati e sodio per unità), caffeina sì/no
+ | Manuale
+ | 
+Sincronizzazioni
+ | Collega/scollega Strava, Health Connect (e quindi Garmin e Samsung Health); frequenza di sync; ultima sincronizzazione
+ | Automatica
+ | 
+Notifiche
+ | Promemoria pasti, bere in sella (ogni 15-20 min), pesata del mattino, piano della sera prima
+ | Manuale
+ | 
+Unità e aspetto
+ | Tema chiaro/scuro/automatico, kg o lb, km o mi
+ | Manuale
+ | 
+Dati e privacy
+ | Esporta tutto (CSV), backup e ripristino, cancella i dati
+ | Manuale
+ | 
+Ogni volta che un dato del corpo cambia (es. peso da Health Connect), l'app ricalcola metabolismo, calorie, grammi per kg e W/kg in automatico.
+
+## 5. Schermate e navigazione
+Sei schede nella barra in basso, più Impostazioni dall'ingranaggio in alto.
+Schermata
+ | Cosa mostra
+ | Interazioni
+ | 
+Oggi
+ | Forma (CTL, ATL, TSB), calorie e macro del giorno, giro previsto, prossimo pasto, idratazione
+ | Tocca il pasto per la tendina; +250/+500 ml d'acqua
+ | 
+Giri
+ | Elenco giri da Strava, Garmin e manuali con watt medi, NP, IF, TSS
+ | Tocca un giro per il dettaglio tecnico; + A mano
+ | 
+Dettaglio giro
+ | Grafico potenza con linea FTP, potenza e carico, cuore e pedalata, migliori sforzi, zone, nutrizione del giro
+ | Torna all'elenco
+ | 
+Settimana
+ | Calendario settimanale a colori per tipo di giorno, TSS e ore della settimana, piano del giorno scelto
+ | Tocca un giorno; frecce per cambiare settimana
+ | 
+Piano
+ | Prossima uscita (tipo, durata, orari dei pasti, carbo/h, liquidi, sodio) e scheda carico carbo
+ | Scegli tipo e durata, tutto si ricalcola
+ | 
+Diario
+ | Pasti del giorno, mangiati o no, micronutrienti, correzione per il pasto successivo
+ | Segna il pasto come mangiato o modifica le quantità
+ | 
+Forma
+ | Grafico PMC (CTL e ATL), FTP, W/kg, peso, % grasso, massa magra, metabolismo basale
+ | Proposta di aggiornare l'FTP
+ | 
+Impostazioni
+ | Vedi sezione 4
+ | -
+ | 
+
+## 6. Pasti: pre-info e tendina dettagliata
+Ogni pasto, in Oggi, Settimana e Diario, si mostra chiuso con una pre-info di una riga; toccandolo si apre una tendina con ogni alimento in grammi e il perché del pasto.
+Chiuso (pre-info): nome del pasto, orario, kcal totali e un riassunto. Esempio: Pranzo · 13:00 · 900 kcal — riso, pollo, zucchine, olio.
+Aperto (tendina):
+Elenco degli alimenti, ciascuno con grammi (o unità), kcal, carboidrati, proteine e grassi.
+Totali del pasto e percentuale sul fabbisogno del giorno.
+Perché questo pasto: 2-3 righe legate al giro e alla giornata.
+Come: cottura e momento (es. riso bianco, non integrale, 3 ore prima del giro).
+Bevi: quantità di acqua o liquidi con il pasto.
+Alternative: 1-2 sostituzioni equivalenti (es. riso → pasta o patate).
+Nel Diario: pulsanti Mangiato, Modifica quantità, Saltato.
+Esempio di tendina, pranzo di giovedì 29 ottobre (giornata media, sweet spot alle 17:30):
+Alimento
+ | Quantità
+ | kcal
+ | Carbo (g)
+ | Proteine (g)
+ | Grassi (g)
+ | 
+Riso basmati (crudo)
+ | 120 g
+ | 430
+ | 94
+ | 9
+ | 1
+ | 
+Petto di pollo (crudo)
+ | 150 g
+ | 165
+ | 0
+ | 35
+ | 2
+ | 
+Zucchine
+ | 200 g
+ | 35
+ | 3
+ | 3
+ | 1
+ | 
+Olio extravergine
+ | 10 g (1 cucchiaio)
+ | 90
+ | 0
+ | 0
+ | 10
+ | 
+Pane
+ | 50 g
+ | 135
+ | 27
+ | 4
+ | 1
+ | 
+Kiwi
+ | 1 (80 g)
+ | 50
+ | 9
+ | 1
+ | 0
+ | 
+Totale
+ |  | 905
+ | 133
+ | 52
+ | 15
+ | 
+Perché: carboidrati facili da digerire 4-5 ore prima delle ripetute per arrivare con il glicogeno pieno; proteine per il recupero di ieri; pochi grassi e fibre per non appesantire. Il kiwi aggiunge vitamina C, che aiuta ad assorbire il ferro. Bevi: 500 ml d'acqua.
+
+## 7. Calendario settimanale e recupero
+La schermata Settimana mostra 7 giorni (lunedì-domenica), ognuno con un colore per il tipo di giornata e una barra alta quanto il TSS previsto o fatto.
+Tipo di giornata
+ | Quando
+ | Carbo (g/kg)
+ | Proteine (g/kg)
+ | Note per l'alimentazione
+ | 
+Riposo
+ | Nessun giro
+ | 3-4
+ | 1,8
+ | Calorie più basse, proteine alte, magnesio e ferro (mandorle, spinaci, legumi), almeno 2,5 L di liquidi
+ | 
+Recupero attivo / leggero
+ | Giro sotto 1 h in Z1-Z2, o giorno dopo un giro duro
+ | 4-5
+ | 1,8
+ | Più liquidi, frutta e verdura ricche di antiossidanti
+ | 
+Medio
+ | 1-3 h o TSS 60-150
+ | 5-7
+ | 1,6-2,0
+ | Pasto pre-giro con 1 g/kg di carboidrati, recupero entro 60 min
+ | 
+Duro
+ | Oltre 3 h o TSS sopra 150
+ | 7-10
+ | 1,6-2,0
+ | 60-90 g/h in sella, recupero subito, il giorno dopo recupero attivo
+ | 
+Carico carbo
+ | 3 giorni prima di un evento oltre 3 h
+ | 6-10
+ | 1,5
+ | Poche fibre, niente cibi nuovi
+ | 
+Regole automatiche di recupero:
+Dopo un giorno con TSS sopra 150, il giorno seguente viene proposto come recupero attivo o riposo.
+Con TSB sotto -30 l'app avvisa di affaticamento e propone un giorno di riposo.
+Il pasto di recupero arriva entro 30-60 minuti dalla fine del giro: 1,0-1,2 g/kg di carboidrati e 0,3 g/kg di proteine.
+La sera prima di un giro duro si aggiunge uno spuntino di carboidrati.
+Toccando un giorno si vedono il giro (pianificato o fatto), calorie, macro in grammi e in g/kg, la nota del giorno e i pasti con la tendina della sezione 6. Per i giorni passati si vede il confronto tra pasti registrati e previsti.
+
+## 8. Regole nutrizionali
+Valori di partenza dalle linee guida per la nutrizione sportiva; l'app li adatta a peso, obiettivo e giri. Non sostituiscono un medico o un nutrizionista.
+Calorie del giorno
+BMR con Mifflin-St Jeor, o Katch-McArdle se c'è la % di grasso. kcal del giro dai kJ del power meter (1 kJ ≈ 1 kcal). Correzione: circa -300 kcal per dimagrire (mai nei giorni duri), +300 per massa.
+Durante il giro
+Durata
+ | Carboidrati
+ | Liquidi
+ | Sodio
+ | 
+Sotto 1 h
+ | Solo acqua
+ | 400-600 ml/h
+ | 0-300 mg/h
+ | 
+1-2 h
+ | 30-60 g/h
+ | 500-750 ml/h
+ | 300-600 mg/h
+ | 
+2-3 h
+ | 60 g/h
+ | 500-750 ml/h
+ | 400-700 mg/h
+ | 
+Oltre 3 h
+ | 60-90 g/h (fino a 120 se allenato)
+ | 500-800 ml/h
+ | 400-800 mg/h
+ | 
+Soglia e gara: +10 g/h. Sopra 25 °C: liquidi e sodio +20-30%. Promemoria ogni 20 minuti.
+Micronutrienti monitorati: ferro, calcio, vitamina D, magnesio, potassio, sodio, vitamine C, E e gruppo B, zinco, omega 3. Se uno resta sotto l'80% del fabbisogno, il pasto successivo viene corretto con alimenti che lo contengono.
+Carico dei carboidrati (solo per eventi oltre 90 minuti):
+Giorno
+ | Carbo (g/kg)
+ | Esempio a 74 kg
+ | 
+-3
+ | 6-7
+ | 450-520 g
+ | 
+-2
+ | 8-10
+ | 590-740 g
+ | 
+-1
+ | 8-10
+ | 590-740 g
+ | 
+Giorno X
+ | 1-4 g/kg a colazione, poi 60-90 g/h
+ | 150 g a colazione
+ | 
+Integratori: proposti solo se servono (vitamina D in inverno, ferro dopo esame del sangue, caffeina 3 mg/kg prima di gare, sali nei giorni caldi); per il resto l'app rimanda al medico.
+Cibi fit e non fit: nessun divieto. I cibi meno salutari (pizza, dolci, fritti) sono proposti solo dopo giri duri, in una porzione, mai la sera prima di un giro importante.
+
+## 9. Dati tecnici e formule
+Metriche calcolate dall'app, con FTP e peso presi dalle Impostazioni.
+Metrica
+ | Significato
+ | Calcolo
+ | 
+NP (Normalized Power)
+ | Potenza "fisiologica" di un giro variabile
+ | Media mobile 30 s, elevata alla 4ª, media, radice 4ª
+ | 
+IF (Intensity Factor)
+ | Intensità rispetto all'FTP
+ | NP / FTP
+ | 
+VI (Variability Index)
+ | Quanto è stato irregolare il giro
+ | NP / watt medi
+ | 
+TSS
+ | Stress dell'allenamento
+ | ore × IF² × 100
+ | 
+kJ
+ | Lavoro meccanico
+ | watt medi × secondi / 1000
+ | 
+W/kg
+ | Potenza relativa
+ | FTP / peso
+ | 
+EF (Efficiency Factor)
+ | Efficienza aerobica
+ | NP / FC media
+ | 
+Deriva Pw:FC
+ | Tenuta aerobica nel giro
+ | Variazione di EF tra prima e seconda metà
+ | 
+CTL (Fitness)
+ | Carico cronico
+ | Media esponenziale del TSS su 42 giorni
+ | 
+ATL (Fatica)
+ | Carico acuto
+ | Media esponenziale del TSS su 7 giorni
+ | 
+TSB (Freschezza)
+ | Forma del giorno
+ | CTL di ieri - ATL di ieri
+ | 
+Migliori sforzi
+ | Potenza massima su 5 s, 1, 5, 20 min
+ | Dallo stream dei watt
+ | 
+FTP stimata
+ | Proposta di nuova FTP
+ | 95% del miglior 20 min
+ | 
+Zone di potenza
+ | Tempo in Z1-Z6 (Coggan)
+ | Z1 &lt;55%, Z2 56-75%, Z3 76-90%, Z4 91-105%, Z5 106-120%, Z6 &gt;120% dell'FTP
+ | 
+Carboidrati bruciati
+ | Per dosare il recupero
+ | Stima da kJ e IF (più alta l'intensità, più carboidrati)
+ | 
+Massa magra
+ | Base per il BMR
+ | peso × (1 - % grasso)
+ | 
+
+## 10. Architettura tecnica
+Tutto gira sul telefono, senza server.
+Livello
+ | Tecnologia
+ | Ruolo
+ | 
+Interfaccia
+ | Jetpack Compose, Material 3, Navigation
+ | Schermate, tendine, grafici
+ | 
+Logica
+ | ViewModel, Kotlin Coroutines e Flow
+ | Stato delle schermate
+ | 
+Motore di calcolo
+ | Moduli Kotlin puri (metriche, calorie, macro, idratazione, piano, carico)
+ | Tutte le formule delle sezioni 8 e 9, testabili a parte
+ | 
+Generatore pasti
+ | Database interno di alimenti con valori per 100 g + modelli di pasto
+ | Sceglie alimenti e grammi per centrare i macro del pasto
+ | 
+Dati
+ | Room (SQLite)
+ | Profilo, giri, stream, pasti, diario, storico peso
+ | 
+Strava
+ | Retrofit + OAuth 2.0 (Custom Tabs)
+ | Download attività e stream dei watt
+ | 
+Health Connect
+ | Libreria Jetpack Health Connect
+ | Peso, grasso, sonno, FC a riposo, allenamenti Garmin
+ | 
+File
+ | Lettore FIT/GPX
+ | Import manuale dei file dei giri
+ | 
+Background
+ | WorkManager
+ | Sync periodica, ricalcolo notturno di CTL/ATL
+ | 
+Notifiche
+ | Android Notifications + AlarmManager
+ | Promemoria pasti e bere in sella
+ | 
+Grafici
+ | Vico o Canvas di Compose
+ | Potenza, PMC, peso, zone
+ | 
+Il database degli alimenti parte con 200-300 cibi comuni italiani (fonte: tabelle CREA) e si può estendere con Open Food Facts tramite codice a barre.
+
+## 11. Modifiche ancora da fare all'anteprima
+Ultimi passaggi richiesti sul prototipo interattivo prima di iniziare il codice:
+Pasti in Oggi, Settimana e Diario: pre-info chiusa e tendina con ogni alimento in grammi, kcal e macro (sezione 6)
+Nella tendina: perché del pasto, come prepararlo, cosa bere, alternative
+Quantità precise per tutti gli alimenti (oggi alcuni pasti non le hanno)
+Menu Impostazioni con tutte le sezioni della sezione 4, aperto dall'ingranaggio in alto
+Percorso guidato alla prima apertura (profilo, corpo, potenza)
+Rendere cliccabili Garmin e inserimento manuale dei giri
+
+## 12. Come iniziare il progetto
+Prima di scrivere codice (circa 1 ora):
+Installa Android Studio sul PC.
+Sul Samsung attiva Opzioni sviluppatore e Debug USB.
+Crea l'app su strava.com/settings/api e annota Client ID e Client Secret.
+Verifica che Garmin Connect invii i giri a Strava e che Samsung Health scriva su Health Connect.
+Decidi le modifiche finali all'anteprima (sezione 11).
+Roadmap di sviluppo
+Versione
+ | Contenuto
+ | Risultato
+ | 
+1
+ | Impostazioni, percorso guidato, giri manuali, motore di calcolo, schermata Oggi
+ | L'app calcola calorie e macro dai tuoi dati
+ | 
+2
+ | Sincronizzazione Strava, dettaglio giro con NP, IF, TSS, zone e migliori sforzi
+ | Giri automatici con dati tecnici
+ | 
+3
+ | Generatore pasti, tendine, Diario, micronutrienti
+ | Menu giornaliero dettagliato
+ | 
+4
+ | Settimana, Piano, carico carbo, regole di recupero
+ | Pianificazione dei giorni successivi
+ | 
+5
+ | Health Connect, Forma (PMC), notifiche, esportazione dati
+ | App completa
+ | 
+Domande aperte
+Quanti pasti al giorno preferisci di base (3, 4 o 5)?
+Vuoi che l'app proponga anche gli allenamenti, o solo l'alimentazione per i giri che scegli tu?
+Hai già una bilancia smart collegata a Samsung Health?
