@@ -112,13 +112,13 @@ private fun NextRide(nav: NavState, today: LocalDate) {
         }
     }
     Spacer(Modifier.height(4.dp))
-    Btn("Pianifica per ${dateIt(date)}") { Repo.plan(date, pr); Notify.stopDrinkReminders(ctx) }
+    Btn("Pianifica per ${dateIt(date)}") { Repo.plan(date, pr); Notify.stopDrinkReminders(ctx); Notify.scheduleAll(ctx) }
     if (d.planned.containsKey(date.toString())) {
         Spacer(Modifier.height(6.dp))
-        Btn("Rimuovi la pianificazione", primary = false) { Repo.plan(date, null) }
+        Btn("Rimuovi la pianificazione", primary = false) { Repo.plan(date, null); Notify.scheduleAll(ctx) }
     }
     Spacer(Modifier.height(6.dp))
-    Btn("Avvia promemoria per bere", primary = false) { Notify.startDrinkReminders(ctx, pr.durMin, fuel.fluidMlPerH) }
+    Btn("Avvia promemoria per bere", primary = false) { Notify.startDrinkReminders(ctx, pr.durMin, fuel.fluidMlPerH, Repo.data.profile.notifDrinkEvery) }
     Spacer(Modifier.height(8.dp))
 }
 

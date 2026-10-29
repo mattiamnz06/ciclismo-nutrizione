@@ -43,6 +43,18 @@ data class Profile(
     val notifDrink: Boolean = false,
     val notifWeigh: Boolean = false,
     val notifEvening: Boolean = false,
+    /** Master switch for every reminder. */
+    val notifOn: Boolean = false,
+    /** Meal kinds (Kind names, comma separated) that get a reminder. */
+    val notifMealKinds: String = "BREAKFAST,SNACK,LUNCH,DINNER,PRE,POST,SUPPER",
+    val notifMealLead: Int = 0,
+    val notifDrinkEvery: Int = 20,
+    val notifWater: Boolean = false,
+    val notifWaterEvery: Int = 2,
+    val notifWaterFrom: Int = 9 * 60,
+    val notifWaterTo: Int = 21 * 60,
+    val notifWeighAt: Int = 7 * 60,
+    val notifEveningAt: Int = 21 * 60,
 ) {
     fun body() = Body(sex, age, height, weight, bodyFat)
 }
@@ -185,6 +197,10 @@ data class AppData(
             put("stravaId", p.stravaId); put("stravaSecret", p.stravaSecret)
             put("notifMeals", p.notifMeals); put("notifDrink", p.notifDrink)
             put("notifWeigh", p.notifWeigh); put("notifEvening", p.notifEvening)
+            put("notifOn", p.notifOn); put("notifMealKinds", p.notifMealKinds); put("notifMealLead", p.notifMealLead)
+            put("notifDrinkEvery", p.notifDrinkEvery); put("notifWater", p.notifWater); put("notifWaterEvery", p.notifWaterEvery)
+            put("notifWaterFrom", p.notifWaterFrom); put("notifWaterTo", p.notifWaterTo)
+            put("notifWeighAt", p.notifWeighAt); put("notifEveningAt", p.notifEveningAt)
             put("supplements", JSONArray(p.supplements.map {
                 JSONObject().put("name", it.name).put("carbG", it.carbG).put("sodiumMg", it.sodiumMg)
             }))
@@ -215,6 +231,13 @@ data class AppData(
                 stravaId = o.optString("stravaId", ""), stravaSecret = o.optString("stravaSecret", ""),
                 notifMeals = o.optBoolean("notifMeals", false), notifDrink = o.optBoolean("notifDrink", false),
                 notifWeigh = o.optBoolean("notifWeigh", false), notifEvening = o.optBoolean("notifEvening", false),
+                // Older data had no master switch: keep reminders on if any was enabled.
+                notifOn = o.optBoolean("notifOn", listOf("notifMeals", "notifWeigh", "notifEvening").any { o.optBoolean(it, false) }),
+                notifMealKinds = o.optString("notifMealKinds", d.notifMealKinds), notifMealLead = o.optInt("notifMealLead", 0),
+                notifDrinkEvery = o.optInt("notifDrinkEvery", 20), notifWater = o.optBoolean("notifWater", false),
+                notifWaterEvery = o.optInt("notifWaterEvery", 2), notifWaterFrom = o.optInt("notifWaterFrom", d.notifWaterFrom),
+                notifWaterTo = o.optInt("notifWaterTo", d.notifWaterTo), notifWeighAt = o.optInt("notifWeighAt", d.notifWeighAt),
+                notifEveningAt = o.optInt("notifEveningAt", d.notifEveningAt),
             )
         }
 

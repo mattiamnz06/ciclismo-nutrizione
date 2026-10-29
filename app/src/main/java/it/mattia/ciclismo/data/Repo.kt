@@ -32,6 +32,11 @@ object Repo {
         Foods.setCustom(data.customFoods)
     }
 
+    /** Loads the data when the process was started by a receiver instead of the activity. */
+    fun ensure(ctx: Context) {
+        if (!::file.isInitialized) init(ctx.applicationContext)
+    }
+
     fun update(f: (AppData) -> AppData) {
         data = f(data)
         Foods.setCustom(data.customFoods)

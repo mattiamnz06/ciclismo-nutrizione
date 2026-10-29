@@ -38,7 +38,7 @@ fun CiclismoApp() {
     val p = Repo.data.profile
 
     LaunchedEffect(Unit) {
-        Notify.scheduleAll(ctx, Repo.data.profile)
+        Notify.scheduleAll(ctx)
         if (Repo.data.stravaRefresh.isNotEmpty()) {
             Strava.sync().onSuccess { n -> if (n > 0) Repo.syncMessage = "Importati $n nuovi giri da Strava" }
         }

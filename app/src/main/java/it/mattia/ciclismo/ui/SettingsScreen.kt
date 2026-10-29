@@ -8,6 +8,8 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.*
@@ -36,7 +38,7 @@ private val SECTIONS = listOf(
     Triple("alimentazione", "Alimentazione", "Intolleranze, cibi, pasti e orari"),
     Triple("integratori", "Integratori", "Gel, barrette, isotonici, caffeina"),
     Triple("sync", "Sincronizzazioni", "Strava, Health Connect (Garmin, Samsung Health)"),
-    Triple("notifiche", "Notifiche", "Pasti, bere in sella, pesata, piano della sera"),
+    Triple("notifiche", "Notifiche", "Pasti, bere in sella, acqua, pesata, piano della sera"),
     Triple("aspetto", "Unità e aspetto", "Tema chiaro, scuro o automatico"),
     Triple("dati", "Dati e privacy", "Esporta CSV, backup, ripristino, cancella"),
 )
@@ -204,6 +206,7 @@ private fun SyncSection() {
     if (Repo.syncMessage.isNotEmpty()) Text(Repo.syncMessage, fontSize = 13.sp, modifier = Modifier.padding(top = 8.dp))
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun NotifSection() {
     val ctx = LocalContext.current
@@ -212,13 +215,74 @@ private fun NotifSection() {
     fun change(f: (it.mattia.ciclismo.data.Profile) -> it.mattia.ciclismo.data.Profile) {
         if (Build.VERSION.SDK_INT >= 33) perm.launch(Manifest.permission.POST_NOTIFICATIONS)
         Repo.setProfile(f)
-        Notify.scheduleAll(ctx, Repo.data.profile)
+        Notify.scheduleAll(ctx)
     }
-    SwitchRow("Promemoria pasti", "Agli orari abituali", p.notifMeals) { v -> change { it.copy(notifMeals = v) } }
-    SwitchRow("Pesata del mattino", "Alle 7:00", p.notifWeigh) { v -> change { it.copy(notifWeigh = v) } }
-    SwitchRow("Piano della sera", "Alle 21:00, per il giorno dopo", p.notifEvening) { v -> change { it.copy(notifEvening = v) } }
-    Muted("I promemoria per bere in sella (ogni 20 minuti) si avviano dalla schermata Piano.", 12, Modifier.padding(top = 4.dp))
-    Muted("Dopo un riavvio del telefono i promemoria ripartono alla prima apertura dell'app.", 12)
+    fun clock(m: Int) = "%02d:%02d".format(m / 60, m % 60)
+    fun shift(m: Int, by: Int) = Math.floorMod(m + by, 24 * 60)
+
+    SwitchRow("Notifiche attive", "Interruttore generale per tutti i promemoria", p.notifOn) { v -> change { it.copy(notifOn = v) } }
+    if (!p.notifOn) return
+    HorizontalDivider(Modifier.padding(vertical = 6.dp))
+
+    SwitchRow("Pasti", "All'ora di ogni pasto del piano di oggi", p.notifMeals) { v -> change { it.copy(notifMeals = v) } }
+    if (p.notifMeals) {
+        val kinds = p.notifMealKinds.split(',').map { it.trim() }.filter { it.isNotEmpty() }.toSet()
+        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Notify.mealKinds.forEach { (k, label) ->
+                FilterChip(selected = k.name in kinds, label = { Text(label) }, onClick = {
+                    val next = if (k.name in kinds) kinds - k.name else kinds + k.name
+                    change { it.copy(notifMealKinds = next.joinToString(",")) }
+                })
+            }
+        }
+        val leads = listOf(0, 5, 10, 15, 30, 45, 60)
+        val li = leads.indexOf(p.notifMealLead).coerceAtLeast(0)
+        Stepper("Anticipo", if (p.notifMealLead == 0) "all'ora" else "${p.notifMealLead} min prima",
+            { change { it.copy(notifMealLead = leads[(li - 1).coerceAtLeast(0)]) } },
+            { change { it.copy(notifMealLead = leads[(li + 1).coerceAtMost(leads.lastIndex)]) } })
+    }
+    HorizontalDivider(Modifier.padding(vertical = 6.dp))
+
+    SwitchRow("Bere in sella", "Partono da soli all'ora del giro pianificato", p.notifDrink) { v -> change { it.copy(notifDrink = v) } }
+    if (p.notifDrink) Stepper("Ogni", "${p.notifDrinkEvery} min",
+        { change { it.copy(notifDrinkEvery = (p.notifDrinkEvery - 5).coerceAtLeast(10)) } },
+        { change { it.copy(notifDrinkEvery = (p.notifDrinkEvery + 5).coerceAtMost(45)) } })
+    HorizontalDivider(Modifier.padding(vertical = 6.dp))
+
+    SwitchRow("Acqua durante il giorno", "Un bicchiere a intervalli regolari", p.notifWater) { v -> change { it.copy(notifWater = v) } }
+    if (p.notifWater) {
+        Stepper("Ogni", "${p.notifWaterEvery} h",
+            { change { it.copy(notifWaterEvery = (p.notifWaterEvery - 1).coerceAtLeast(1)) } },
+            { change { it.copy(notifWaterEvery = (p.notifWaterEvery + 1).coerceAtMost(4)) } })
+        Stepper("Dalle", clock(p.notifWaterFrom),
+            { change { it.copy(notifWaterFrom = shift(p.notifWaterFrom, -30)) } },
+            { change { it.copy(notifWaterFrom = shift(p.notifWaterFrom, 30).coerceAtMost(p.notifWaterTo)) } })
+        Stepper("Alle", clock(p.notifWaterTo),
+            { change { it.copy(notifWaterTo = shift(p.notifWaterTo, -30).coerceAtLeast(p.notifWaterFrom)) } },
+            { change { it.copy(notifWaterTo = shift(p.notifWaterTo, 30)) } })
+    }
+    HorizontalDivider(Modifier.padding(vertical = 6.dp))
+
+    SwitchRow("Pesata del mattino", "Alle ${clock(p.notifWeighAt)}", p.notifWeigh) { v -> change { it.copy(notifWeigh = v) } }
+    if (p.notifWeigh) Stepper("Orario", clock(p.notifWeighAt),
+        { change { it.copy(notifWeighAt = shift(p.notifWeighAt, -15)) } },
+        { change { it.copy(notifWeighAt = shift(p.notifWeighAt, 15)) } })
+    SwitchRow("Piano della sera", "Alle ${clock(p.notifEveningAt)}, per il giorno dopo", p.notifEvening) { v -> change { it.copy(notifEvening = v) } }
+    if (p.notifEvening) Stepper("Orario", clock(p.notifEveningAt),
+        { change { it.copy(notifEveningAt = shift(p.notifEveningAt, -15)) } },
+        { change { it.copy(notifEveningAt = shift(p.notifEveningAt, 15)) } })
+    HorizontalDivider(Modifier.padding(vertical = 6.dp))
+
+    val today = Notify.plannedToday(Repo.data, java.time.LocalDate.now())
+        .filter { it.minuteOfDay * 60_000L > java.time.LocalTime.now().toSecondOfDay() * 1000L }
+        .sortedBy { it.minuteOfDay }
+    Muted(if (today.isEmpty()) "Nessun promemoria rimasto per oggi." else "Prossimi oggi: " +
+        today.take(6).joinToString(" · ") { "${clock(it.minuteOfDay)} ${it.title.substringBefore(" alle")}" }, 12)
+    Btn("Prova una notifica", Modifier.fillMaxWidth().padding(top = 6.dp), primary = false) {
+        if (Build.VERSION.SDK_INT >= 33) perm.launch(Manifest.permission.POST_NOTIFICATIONS)
+        Notify.show(ctx, 9, "Prova", "Le notifiche funzionano.")
+    }
+    Muted("I promemoria vengono ricalcolati ogni notte e dopo un riavvio del telefono.", 12, Modifier.padding(top = 4.dp))
 }
 
 @Composable
