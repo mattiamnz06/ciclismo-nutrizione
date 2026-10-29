@@ -1,7 +1,14 @@
 package it.mattia.ciclismo.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.material3.FilledTonalIconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.text.style.TextAlign
+import it.mattia.ciclismo.engine.Foods
+import it.mattia.ciclismo.engine.Meal
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,6 +23,8 @@ fun DiaryScreen(nav: NavState) {
     val v = DayView(d, date)
     var open by remember(date) { mutableStateOf(setOfNotNull(nav.openMeal?.let { "$date|$it" })) }
     LaunchedEffect(nav.openMeal) { nav.openMeal = null }
+    var edit by remember(date) { mutableStateOf(setOf<String>()) }
+    var picker by remember { mutableStateOf<String?>(null) }
 
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
         Btn("←", Modifier.width(64.dp), primary = false) { nav.diaryDate = date.minusDays(1) }
@@ -44,11 +53,25 @@ fun DiaryScreen(nav: NavState) {
             Spacer(Modifier.height(6.dp))
             val us = v.userScale(m)
             Stepper(
-                "Quantità", "${(us * 100).toInt()}%",
+                "Quantità del pasto", "${(us * 100).toInt()}%",
                 { Repo.setScale(key, ((us - 0.1).coerceAtLeast(0.5) * 10).toInt() / 10.0) },
                 { Repo.setScale(key, ((us + 0.1).coerceAtMost(1.5) * 10 + 0.5).toInt() / 10.0) },
             )
+            val editing = key in edit
+            Row(Modifier.fillMaxWidth().padding(top = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Btn(if (editing) "Fine modifiche" else "Modifica alimenti", Modifier.weight(1f), primary = false) {
+                    edit = if (editing) edit - key else edit + key
+                }
+                Btn("Aggiungi alimento", Modifier.weight(1f), primary = false) { picker = key }
+            }
+            if (editing) ItemEditor(v, m)
         }
+    }
+    val pk = picker
+    if (pk != null) {
+        FoodPicker("Aggiungi a «${v.meals.firstOrNull { v.key(it) == pk }?.name ?: "pasto"}»", onAdd = { f, g ->
+            Repo.addToMeal(pk, f.id, g); picker = null
+        }, onClose = { picker = null })
     }
     AppCard {
         Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -68,4 +91,46 @@ fun DiaryScreen(nav: NavState) {
         Text(v.correctionText, fontSize = 14.sp, modifier = Modifier.padding(top = 6.dp))
     }
     Spacer(Modifier.height(8.dp))
+}
+
+/** Grams of every food in the meal: planned foods can be changed or removed, added ones changed or deleted. */
+@Composable
+private fun ItemEditor(v: DayView, m: Meal) {
+    val key = v.key(m)
+    Spacer(Modifier.height(6.dp))
+    v.plannedItems(m).forEach { it ->
+        val g = v.itemGrams(m, it.food.id) ?: it.grams
+        if (g > 0) ItemRow(it.food.name, g, it.food.liquid, changed = v.itemGrams(m, it.food.id) != null,
+            onSet = { n -> Repo.setItemGrams(key, it.food.id, n) },
+            onReset = { Repo.setItemGrams(key, it.food.id, null) })
+    }
+    v.added(m).forEachIndexed { i, (id, g) ->
+        val fd = Foods.get(id)
+        ItemRow("+ ${fd.name}", g, fd.liquid, changed = false, onSet = { n -> Repo.setAddedGrams(key, i, n) }, onReset = null)
+    }
+    val removed = v.plannedItems(m).filter { v.itemGrams(m, it.food.id) == 0 }
+    if (removed.isNotEmpty()) {
+        Muted("Tolti dal piano", 11, Modifier.padding(top = 6.dp))
+        removed.forEach { it ->
+            Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
+                Text(it.food.name.substringBefore(" ("), Modifier.weight(1f), fontSize = 13.sp)
+                TextButton(onClick = { Repo.setItemGrams(key, it.food.id, null) }) { Text("Rimetti") }
+            }
+        }
+    }
+}
+
+@Composable
+private fun ItemRow(name: String, g: Int, liquid: Boolean, changed: Boolean, onSet: (Int) -> Unit, onReset: (() -> Unit)?) {
+    Row(Modifier.fillMaxWidth().padding(vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
+        Column(Modifier.weight(1f)) {
+            Text(name.substringBefore(" ("), fontSize = 13.sp, maxLines = 1)
+            if (changed && onReset != null) Text("modificato · ripristina", fontSize = 11.sp,
+                color = MaterialTheme.colorScheme.primary, modifier = Modifier.clickable { onReset() })
+        }
+        FilledTonalIconButton(onClick = { onSet((g - step(g)).coerceAtLeast(5)) }, modifier = Modifier.size(36.dp)) { Text("−") }
+        Text("$g ${if (liquid) "ml" else "g"}", Modifier.widthIn(min = 64.dp), fontSize = 13.sp, textAlign = TextAlign.Center)
+        FilledTonalIconButton(onClick = { onSet(g + step(g)) }, modifier = Modifier.size(36.dp)) { Text("+") }
+        TextButton(onClick = { onSet(0) }) { Text("Togli") }
+    }
 }

@@ -1,6 +1,8 @@
 package it.mattia.ciclismo.data
 
 import it.mattia.ciclismo.engine.Body
+import it.mattia.ciclismo.engine.Food
+import it.mattia.ciclismo.engine.Foods
 import it.mattia.ciclismo.engine.Goal
 import it.mattia.ciclismo.engine.Metrics
 import it.mattia.ciclismo.engine.Sex
@@ -108,6 +110,12 @@ data class AppData(
     val stravaAccess: String = "",
     val stravaRefresh: String = "",
     val stravaExpires: Long = 0,
+    /** Foods from barcodes or typed by hand. */
+    val customFoods: List<Food> = emptyList(),
+    /** "date|meal|food" -> grams eaten instead of the planned amount (0 = removed). */
+    val itemGrams: Map<String, Int> = emptyMap(),
+    /** "date|meal" -> foods added to that meal, as (food id, grams). */
+    val added: Map<String, List<Pair<String, Int>>> = emptyMap(),
 ) {
     fun toJson(): JSONObject = JSONObject().apply {
         put("profile", profileJson(profile))
@@ -126,6 +134,11 @@ data class AppData(
         put("stravaAccess", stravaAccess)
         put("stravaRefresh", stravaRefresh)
         put("stravaExpires", stravaExpires)
+        put("customFoods", JSONArray(customFoods.map { foodJson(it) }))
+        put("itemGrams", JSONObject(itemGrams as Map<*, *>))
+        put("added", JSONObject().also { o ->
+            added.forEach { (k, v) -> o.put(k, JSONArray(v.map { JSONArray().put(it.first).put(it.second) })) }
+        })
     }
 
     companion object {
@@ -153,6 +166,11 @@ data class AppData(
                 stravaAccess = o.optString("stravaAccess", ""),
                 stravaRefresh = o.optString("stravaRefresh", ""),
                 stravaExpires = o.optLong("stravaExpires", 0),
+                customFoods = o.optJSONArray("customFoods")?.let { a -> (0 until a.length()).map { foodFrom(a.getJSONObject(it)) } } ?: emptyList(),
+                itemGrams = o.mapOf("itemGrams") { j, k -> j.getInt(k) },
+                added = o.mapOf("added") { j, k ->
+                    val a = j.getJSONArray(k); (0 until a.length()).map { a.getJSONArray(it).let { p -> p.getString(0) to p.getInt(1) } }
+                },
             )
         }
 
@@ -197,6 +215,25 @@ data class AppData(
                 stravaId = o.optString("stravaId", ""), stravaSecret = o.optString("stravaSecret", ""),
                 notifMeals = o.optBoolean("notifMeals", false), notifDrink = o.optBoolean("notifDrink", false),
                 notifWeigh = o.optBoolean("notifWeigh", false), notifEvening = o.optBoolean("notifEvening", false),
+            )
+        }
+
+        private fun foodJson(f: Food) = JSONObject().apply {
+            put("id", f.id); put("name", f.name); put("kcal", f.kcal); put("c", f.c); put("p", f.p); put("f", f.f)
+            put("piece", f.piece); put("liquid", f.liquid); put("category", f.category); put("barcode", f.barcode)
+            put("allergens", JSONArray(f.allergens)); put("micro", JSONArray(f.micro.toList()))
+        }
+
+        private fun foodFrom(o: JSONObject): Food {
+            val m = o.optJSONArray("micro")
+            val al = o.optJSONArray("allergens")
+            return Food(
+                id = o.getString("id"), name = o.getString("name"), kcal = o.optDouble("kcal", 0.0),
+                c = o.optDouble("c", 0.0), p = o.optDouble("p", 0.0), f = o.optDouble("f", 0.0),
+                piece = o.optInt("piece", 0), liquid = o.optBoolean("liquid", false),
+                micro = DoubleArray(Foods.RAW) { i -> m?.optDouble(i, 0.0) ?: 0.0 },
+                category = o.optString("category", "I miei alimenti"), barcode = o.optString("barcode", ""),
+                allergens = if (al == null) emptyList() else (0 until al.length()).map { al.getString(it) },
             )
         }
 
