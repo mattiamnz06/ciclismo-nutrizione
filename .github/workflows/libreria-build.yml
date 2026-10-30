@@ -1,0 +1,47 @@
+name: Build Libreria di lettura
+
+on:
+  push:
+    branches: [main, claude/book-reading-tracker-app-u0228u]
+    paths:
+      - 'libreria-lettura/**'
+      - '.github/workflows/libreria-build.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: libreria-lettura
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.9
+          build-root-directory: libreria-lettura
+      - name: Unit tests
+        run: gradle testDebugUnitTest --no-daemon
+      - name: Build APK
+        run: gradle assembleDebug --no-daemon
+      - name: Save APK as artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: libreria-lettura-apk
+          path: libreria-lettura/app/build/outputs/apk/debug/app-debug.apk
+      - name: Publish release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          cp app/build/outputs/apk/debug/app-debug.apk libreria-lettura.apk
+          gh release delete libreria-lettura-latest --yes --cleanup-tag || true
+          gh release create libreria-lettura-latest libreria-lettura.apk --target "$GITHUB_SHA" \
+            --title "Libreria di lettura (ultima build)" \
+            --notes "APK di debug generato da $GITHUB_SHA. Installa sul telefono e consenti le app da origini sconosciute."
